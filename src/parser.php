@@ -21,13 +21,14 @@ function tokenize($edn) {
         '\\\\[a-z]+'                     => 'character',
         get_symbol_regex()               => 'symbol',
         ':(?:'.get_symbol_regex().')'    => 'keyword',
+        '#'.get_symbol_regex()           => 'tag',
         '(?:[+-]?)(?:[0-9]+\.[0-9]+)M?'  => 'float',
         '(?:[+-]?)(?:[0-9]+)N?'          => 'int',
         '\\('                            => 'list_start',
         '\\)'                            => 'list_end',
         '\\['                            => 'vector_start',
         '\\]'                            => 'vector_end',
-        '\\#{'                           => 'set_start',
+        '#\\{'                           => 'set_start',
         '\\{'                            => 'map_start',
         '\\}'                            => 'map_set_end',
     ));
@@ -67,6 +68,8 @@ function parse_tokens(array $tokens, $edn) {
         $ast[] = parse_token($tokens[$i++]);
     }
 
+    $ast = wrap_tags($ast);
+
     return $ast;
 }
 
@@ -99,7 +102,7 @@ function parse_subtree($dataClass, array $tokens, $i, $edn) {
     ];
 }
 
-function parse_token($token) {
+function parse_token(array $token) {
     list($type, $_, $edn) = $token;
 
     switch ($type) {
@@ -113,6 +116,8 @@ function parse_token($token) {
             return new Symbol($edn);
         case 'keyword':
             return new Keyword(substr($edn, 1));
+        case 'tag':
+            return new Tag(substr($edn, 1));
         case 'int':
             return resolve_int($edn);
         case 'float':
@@ -186,4 +191,24 @@ function resolve_float($edn) {
     }
 
     throw new ParserException(sprintf('Could not parse input %s as float.', $edn));
+}
+
+function wrap_tags(array $ast) {
+    $tag = null;
+
+    foreach ($ast as $i => $node) {
+        if ($node instanceof Tag) {
+            $tag = $node;
+            unset($ast[$i]);
+
+            continue;
+        }
+
+        if ($tag) {
+            $ast[$i] = new Tagged($tag, $node);
+            $tag = null;
+        }
+    }
+
+    return array_values($ast);
 }

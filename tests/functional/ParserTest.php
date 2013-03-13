@@ -6,6 +6,8 @@ use igorw\edn\EdnList;
 use igorw\edn\Vector;
 use igorw\edn\Map;
 use igorw\edn\Set;
+use igorw\edn\Tag;
+use igorw\edn\Tagged;
 
 class ParserTest extends \PHPUnit_Framework_TestCase {
     /** @dataProvider provideEdn */
@@ -130,6 +132,49 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
                     ]),
                 ],
                 '#{{:foo bar}}',
+            ],
+            [
+                [
+                    new Tagged(new Tag('myapp/Person'), 'foo'),
+                ],
+                '#myapp/Person "foo"',
+            ],
+            [
+                [
+                    new Map([
+                        new Keyword('first'),
+                        'Fred',
+                        new Keyword('last'),
+                        'Mertz',
+                    ]),
+                ],
+                '{:first "Fred" :last "Mertz"}',
+            ],
+            [
+                [
+                    new Tagged(
+                        new Tag('myapp/Person'),
+                        new EdnList([
+                            new Keyword('foo'),
+                            new Keyword('bar'),
+                        ])
+                    ),
+                ],
+                '#myapp/Person (:foo :bar)',
+            ],
+            [
+                [
+                    new Tagged(
+                        new Tag('myapp/Person'),
+                        new Map([
+                            new Keyword('first'),
+                            'Fred',
+                            new Keyword('last'),
+                            'Mertz',
+                        ])
+                    ),
+                ],
+                '#myapp/Person {:first "Fred" :last "Mertz"}',
             ],
         ];
     }
