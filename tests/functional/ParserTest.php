@@ -5,6 +5,7 @@ use igorw\edn\Keyword;
 use igorw\edn\EdnList;
 use igorw\edn\Vector;
 use igorw\edn\Map;
+use igorw\edn\Set;
 
 class ParserTest extends \PHPUnit_Framework_TestCase {
     /** @dataProvider provideEdn */
@@ -105,6 +106,31 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
             [[new Map([])], '{}'],
             [[new Map([new Keyword('foo'), new Symbol('bar')])], '{:foo bar}'],
             [[new Map([new Keyword('foo'), new EdnList([new Symbol('bar')])])], '{:foo (bar)}'],
+            [[new Set([])], '#{}'],
+            [[new Set([new Symbol('foo')])], '#{foo}'],
+            [[new Set([new Symbol('foo'), new Symbol('bar')])], '#{foo bar}'],
+            [
+                [
+                    new Set([
+                        new EdnList([
+                            new Symbol('foo'),
+                            new Symbol('bar'),
+                        ]),
+                    ]),
+                ],
+                '#{(foo bar)}',
+            ],
+            [
+                [
+                    new Set([
+                        new Map([
+                            new Keyword('foo'),
+                            new Symbol('bar'),
+                        ]),
+                    ]),
+                ],
+                '#{{:foo bar}}',
+            ],
         ];
     }
 }

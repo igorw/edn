@@ -27,8 +27,9 @@ function tokenize($edn) {
         '\\)'                            => 'list_end',
         '\\['                            => 'vector_start',
         '\\]'                            => 'vector_end',
+        '\\#{'                           => 'set_start',
         '\\{'                            => 'map_start',
-        '\\}'                            => 'map_end',
+        '\\}'                            => 'map_set_end',
     ));
 
     $tokens = $lexer->lex($edn);
@@ -37,6 +38,13 @@ function tokenize($edn) {
 }
 
 function parse_tokens(array $tokens, $edn) {
+    $dataClasses = [
+        'list_start'    => __NAMESPACE__.'\\EdnList',
+        'vector_start'  => __NAMESPACE__.'\\Vector',
+        'map_start'     => __NAMESPACE__.'\\Map',
+        'set_start'     => __NAMESPACE__.'\\Set',
+    ];
+
     $ast = [];
 
     $tokens = array_values(array_filter($tokens, function ($token) {
@@ -47,15 +55,9 @@ function parse_tokens(array $tokens, $edn) {
     $size = count($tokens);
 
     while ($i < $size) {
-        $listTypes = [
-            'list_start'    => ['list_start', 'list_end', __NAMESPACE__.'\\EdnList'],
-            'vector_start'  => ['vector_start', 'vector_end', __NAMESPACE__.'\\Vector'],
-            'map_start'  => ['map_start', 'map_end', __NAMESPACE__.'\\Map'],
-        ];
-
         $type = $tokens[$i][0];
-        if (isset($listTypes[$type])) {
-            $result = parse_subtree($listTypes[$type], $tokens, $i, $edn);
+        if (isset($dataClasses[$type])) {
+            $result = parse_subtree($dataClasses[$type], $tokens, $i, $edn);
             $ast[] = $result['subtree'];
             $i = $result['i'];
 
@@ -68,19 +70,20 @@ function parse_tokens(array $tokens, $edn) {
     return $ast;
 }
 
-function parse_subtree($listType, array $tokens, $i, $edn) {
-    list($startToken, $endToken, $dataClass) = $listType;
+function parse_subtree($dataClass, array $tokens, $i, $edn) {
+    $startTypes = ['list_start', 'vector_start', 'map_start', 'set_start'];
+    $endTypes = ['list_end', 'vector_end', 'map_set_end'];
 
     $subtree = null;
     $level = 0;
     $j = 0;
 
     foreach (array_slice($tokens, $i) as $j => $token) {
-        if ($startToken === $token[0]) {
+        if (in_array($token[0], $startTypes, true)) {
             $level++;
         }
 
-        if ($endToken === $token[0]) {
+        if (in_array($token[0], $endTypes, true)) {
             $level--;
         }
 
