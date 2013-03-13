@@ -31,21 +31,21 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
             [["GET /foo HTTP/1.1\r\n"], '"GET /foo HTTP/1.1\r\n"'],
             [['c'], '\c'],
             [["\n", "\t", ' '], '\newline \tab \space'],
-            [[new Symbol('foo')], 'foo'],
-            [[new Symbol('foo'), new Symbol('bar')], 'foo bar'],
-            [[new Symbol('foo/bar')], 'foo/bar'],
-            [[new Symbol('foo-bar')], 'foo-bar'],
-            [[new Symbol('/')], '/'],
-            [[new Keyword('foo')], ':foo'],
-            [[new Keyword('foo'), new Keyword('bar')], ':foo :bar'],
-            [[new Keyword('foo/bar')], ':foo/bar'],
-            [[new Keyword('foo-bar')], ':foo-bar'],
-            [[new Keyword('/')], ':/'],
+            [[Symbol::get('foo')], 'foo'],
+            [[Symbol::get('foo'), Symbol::get('bar')], 'foo bar'],
+            [[Symbol::get('foo/bar')], 'foo/bar'],
+            [[Symbol::get('foo-bar')], 'foo-bar'],
+            [[Symbol::get('/')], '/'],
+            [[Keyword::get('foo')], ':foo'],
+            [[Keyword::get('foo'), Keyword::get('bar')], ':foo :bar'],
+            [[Keyword::get('foo/bar')], ':foo/bar'],
+            [[Keyword::get('foo-bar')], ':foo-bar'],
+            [[Keyword::get('/')], ':/'],
             [
                 [
                     new EdnList([
-                        new Symbol('defproject'),
-                        new Symbol('com.thortech/data.edn'),
+                        Symbol::get('defproject'),
+                        Symbol::get('com.thortech/data.edn'),
                         "0.1.0-SNAPSHOT",
                     ]),
                 ],
@@ -68,15 +68,15 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
             [[-0.0], '-0.0'],
             [[-0.25], '-0.25'],
             [[new EdnList([])], '()'],
-            [[new EdnList([new Symbol('foo')])], '(foo)'],
-            [[new EdnList([new Symbol('foo'), new Symbol('bar')])], '(foo bar)'],
+            [[new EdnList([Symbol::get('foo')])], '(foo)'],
+            [[new EdnList([Symbol::get('foo'), Symbol::get('bar')])], '(foo bar)'],
             [
                 [
                     new EdnList([
-                        new Symbol('foo'),
-                        new Symbol('bar'),
+                        Symbol::get('foo'),
+                        Symbol::get('bar'),
                         new EdnList([
-                            new Symbol('baz'),
+                            Symbol::get('baz'),
                         ]),
                     ]),
                 ],
@@ -85,15 +85,15 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
             [
                 [
                     new EdnList([
-                        new Symbol('foo'),
-                        new Symbol('bar'),
+                        Symbol::get('foo'),
+                        Symbol::get('bar'),
                         new EdnList([
-                            new Symbol('baz'),
+                            Symbol::get('baz'),
                         ]),
-                        new Symbol('qux'),
+                        Symbol::get('qux'),
                         new EdnList([
                             new EdnList([
-                                new Symbol('quux'),
+                                Symbol::get('quux'),
                             ]),
                         ]),
                     ]),
@@ -101,32 +101,32 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
                 '(foo bar (baz) qux ((quux)))',
             ],
             [[new Vector([])], '[]'],
-            [[new Vector([new Symbol('foo')])], '[foo]'],
-            [[new Vector([new Symbol('foo'), new Symbol('bar')])], '[foo bar]'],
+            [[new Vector([Symbol::get('foo')])], '[foo]'],
+            [[new Vector([Symbol::get('foo'), Symbol::get('bar')])], '[foo bar]'],
             [
                 [
                     new Vector([
-                        new Symbol('foo'),
-                        new Symbol('bar'),
+                        Symbol::get('foo'),
+                        Symbol::get('bar'),
                         new Vector([
-                            new Symbol('baz')
+                            Symbol::get('baz')
                         ]),
                     ]),
                 ],
                 '[foo bar [baz]]',
             ],
             [[new Map([])], '{}'],
-            [[new Map([new Keyword('foo'), new Symbol('bar')])], '{:foo bar}'],
-            [[new Map([new Keyword('foo'), new EdnList([new Symbol('bar')])])], '{:foo (bar)}'],
+            [[new Map([Keyword::get('foo'), Symbol::get('bar')])], '{:foo bar}'],
+            [[new Map([Keyword::get('foo'), new EdnList([Symbol::get('bar')])])], '{:foo (bar)}'],
             [[new Set([])], '#{}'],
-            [[new Set([new Symbol('foo')])], '#{foo}'],
-            [[new Set([new Symbol('foo'), new Symbol('bar')])], '#{foo bar}'],
+            [[new Set([Symbol::get('foo')])], '#{foo}'],
+            [[new Set([Symbol::get('foo'), Symbol::get('bar')])], '#{foo bar}'],
             [
                 [
                     new Set([
                         new EdnList([
-                            new Symbol('foo'),
-                            new Symbol('bar'),
+                            Symbol::get('foo'),
+                            Symbol::get('bar'),
                         ]),
                     ]),
                 ],
@@ -136,8 +136,8 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
                 [
                     new Set([
                         new Map([
-                            new Keyword('foo'),
-                            new Symbol('bar'),
+                            Keyword::get('foo'),
+                            Symbol::get('bar'),
                         ]),
                     ]),
                 ],
@@ -152,9 +152,9 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
             [
                 [
                     new Map([
-                        new Keyword('first'),
+                        Keyword::get('first'),
                         'Fred',
-                        new Keyword('last'),
+                        Keyword::get('last'),
                         'Mertz',
                     ]),
                 ],
@@ -165,8 +165,8 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
                     new Tagged(
                         new Tag('myapp/Person'),
                         new EdnList([
-                            new Keyword('foo'),
-                            new Keyword('bar'),
+                            Keyword::get('foo'),
+                            Keyword::get('bar'),
                         ])
                     ),
                 ],
@@ -177,9 +177,9 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
                     new Tagged(
                         new Tag('myapp/Person'),
                         new Map([
-                            new Keyword('first'),
+                            Keyword::get('first'),
                             'Fred',
-                            new Keyword('last'),
+                            Keyword::get('last'),
                             'Mertz',
                         ])
                     ),
@@ -188,16 +188,16 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
             ],
             [[], ';'],
             [[], '; foo'],
-            [[new Symbol('foo')], "; foo\nfoo"],
-            [[new Symbol('foo'), new Symbol('bar')], "; foo\nfoo; bar\nbar"],
+            [[Symbol::get('foo')], "; foo\nfoo"],
+            [[Symbol::get('foo'), Symbol::get('bar')], "; foo\nfoo; bar\nbar"],
             [[], "; foo bar baz qux"],
             [[], "; foo bar baz qux\n"],
             [[], "; foo bar baz qux\n\n"],
-            [[new Symbol('quux')], "; foo bar baz qux\n\nquux\n\n"],
+            [[Symbol::get('quux')], "; foo bar baz qux\n\nquux\n\n"],
             [[], '#_foo'],
-            [[new Vector([new Symbol('a'), new Symbol('b'), 42])], '[a b #_foo 42]'],
+            [[new Vector([Symbol::get('a'), Symbol::get('b'), 42])], '[a b #_foo 42]'],
             [[], '#_ foo'],
-            [[new Vector([new Symbol('a'), new Symbol('b'), 42])], '[a b #_ foo 42]'],
+            [[new Vector([Symbol::get('a'), Symbol::get('b'), 42])], '[a b #_ foo 42]'],
         ];
     }
 }

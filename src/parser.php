@@ -115,9 +115,9 @@ function parse_token(array $token) {
         case 'character':
             return resolve_character(substr($edn, 1));
         case 'symbol':
-            return new Symbol($edn);
+            return Symbol::get($edn);
         case 'keyword':
-            return new Keyword(substr($edn, 1));
+            return Keyword::get(substr($edn, 1));
         case 'tag':
             return new Tag(substr($edn, 1));
         case 'int':
