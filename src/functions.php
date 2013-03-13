@@ -2,21 +2,100 @@
 
 namespace igorw\edn;
 
-function parse($sourceEdn) {
-    $parts = split_by_whitespace($sourceEdn);
+use Phlexy\LexerFactory\Stateless\UsingPregReplace;
+use Phlexy\LexerDataGenerator;
 
-    return array_map(__NAMESPACE__.'\\parse_part', $parts);
+function parse($edn) {
+    $tokens = tokenize($edn);
+
+    return parse_tokens($tokens, $edn);
 }
 
-// http://stackoverflow.com/a/11873272/289985
-function split_by_whitespace($sourceEdn) {
-    return array_values(
-        array_filter(
-            preg_split('#(?=(?:[^"]*"[^"]*")*[^"]*$)[\s,]#', $sourceEdn),
-            function ($value) { return $value !== ''; }));
+function tokenize($edn) {
+    $factory = new UsingPregReplace(new LexerDataGenerator());
+
+    $lexer = $factory->createLexer(array(
+        'nil|true|false'                 => 'literal',
+        '"[^"\\\\]*(?:\\\\.[^"\\\\]*)*"' => 'string',
+        '[\s,]'                          => 'whitespace',
+        '\\\\[a-z]+'                     => 'character',
+        get_symbol_regex()               => 'symbol',
+        ':(?:'.get_symbol_regex().')'    => 'keyword',
+        '(?:[+-]?)(?:[0-9]+\.[0-9]+)M?'  => 'float',
+        '(?:[+-]?)(?:[0-9]+)N?'          => 'int',
+        '\\('                            => 'list_start',
+        '\\)'                            => 'list_end',
+    ));
+
+    $tokens = $lexer->lex($edn);
+
+    return $tokens;
 }
 
-function parse_part($edn) {
+function parse_tokens(array $tokens, $edn) {
+    $ast = [];
+
+    $tokens = array_values(array_filter($tokens, function ($token) {
+        return 'whitespace' !== $token[0];
+    }));
+
+    $i = 0;
+    $size = count($tokens);
+
+    while ($i < $size) {
+        list($type, $_, $value) = $tokens[$i];
+
+        if ('list_start' === $type) {
+            $level = 0;
+            $j = 0;
+            foreach (array_slice($tokens, $i) as $j => $token) {
+                if ('list_start' === $token[0]) {
+                    $level++;
+                }
+
+                if ('list_end' === $token[0]) {
+                    $level--;
+                }
+
+                if (0 === $level) {
+                    $ast[] = parse_tokens(array_slice($tokens, $i+1, $j-1), $edn);
+                    break;
+                }
+            }
+            $i += $j + 1;
+            continue;
+        }
+
+        $ast[] = parse_token($tokens[$i++]);
+    }
+
+    return $ast;
+}
+
+function parse_token($token) {
+    list($type, $_, $edn) = $token;
+
+    switch ($type) {
+        case 'literal':
+            return resolve_literal($edn);
+        case 'string':
+            return resolve_string(substr($edn, 1, -1));
+        case 'character':
+            return resolve_character(substr($edn, 1));
+        case 'symbol':
+            return new Symbol($edn);
+        case 'keyword':
+            return new Keyword(substr($edn, 1));
+        case 'int':
+            return resolve_int($edn);
+        case 'float':
+            return resolve_float($edn);
+    }
+
+    throw new ParserException(sprintf('Could not parse input %s.', $edn));
+}
+
+function resolve_literal($edn) {
     switch ($edn) {
         case 'nil':
             return null;
@@ -26,36 +105,10 @@ function parse_part($edn) {
             return false;
     }
 
-    if ('"' === $edn[0]) {
-        return resolve_escape_characters(substr($edn, 1, -1));
-    }
-
-    if ('\\' === $edn[0]) {
-        return resolve_character(substr($edn, 1));
-    }
-
-    if (is_symbol($edn)) {
-        return new Symbol($edn);
-    }
-
-    if (':' === $edn[0] && is_symbol(substr($edn, 1))) {
-        return new Keyword(substr($edn, 1));
-    }
-
-    if (preg_match('#^([+-]?)([0-9]+)N?$#', $edn, $matches)) {
-        $factor = ($matches[1] && '-' === $matches[1]) ? -1 : 1;
-        return (int) $matches[2] * $factor;
-    }
-
-    if (preg_match('#^([+-]?)([0-9]+\.[0-9]+)M?$#', $edn, $matches)) {
-        $factor = ($matches[1] && '-' === $matches[1]) ? -1 : 1;
-        return (float) $matches[2] * $factor;
-    }
-
-    throw new ParserException(sprintf('Could not parse input %s.', $edn));
+    throw new ParserException(sprintf('Could not parse input %s as litral.', $edn));
 }
 
-function resolve_escape_characters($edn) {
+function resolve_string($edn) {
     return strtr($edn, [
         '\t' => "\t",
         '\r' => "\r",
@@ -74,7 +127,7 @@ function resolve_character($edn) {
     return isset($chars[$edn]) ? $chars[$edn] : $edn;
 }
 
-function is_symbol($edn) {
+function get_symbol_regex() {
     $alpha = 'a-zA-Z';
     $alphaNum = 'a-zA-Z0-9';
     $chars = '*!_?$%&=';
@@ -82,9 +135,28 @@ function is_symbol($edn) {
 
     $nonNumericRegex = "[$extraChars][$alpha$chars]+|[$alpha$chars][$alphaNum$chars$extraChars]*";
 
-    $symbolRegex = $nonNumericRegex;
-    $symbolRegex .= "|/";
-    $symbolRegex .= "|/{0}[$alpha$chars][$alphaNum$chars]*/($nonNumericRegex)/{0}";
+    $symbolRegex = [];
+    $symbolRegex[] = "/{0}[$alpha$chars][$alphaNum$chars]*/(?:$nonNumericRegex)/{0}";
+    $symbolRegex[] = $nonNumericRegex;
+    $symbolRegex[] = '/';
 
-    return (bool) preg_match("#^($symbolRegex)$#", $edn);
+    return implode('|', $symbolRegex);
+}
+
+function resolve_int($edn) {
+    if (preg_match('#^([+-]?)([0-9]+)N?$#', $edn, $matches)) {
+        $factor = ($matches[1] && '-' === $matches[1]) ? -1 : 1;
+        return (int) $matches[2] * $factor;
+    }
+
+    throw new ParserException(sprintf('Could not parse input %s as int.', $edn));
+}
+
+function resolve_float($edn) {
+    if (preg_match('#^([+-]?)([0-9]+\.[0-9]+)M?$#', $edn, $matches)) {
+        $factor = ($matches[1] && '-' === $matches[1]) ? -1 : 1;
+        return (float) $matches[2] * $factor;
+    }
+
+    throw new ParserException(sprintf('Could not parse input %s as float.', $edn));
 }

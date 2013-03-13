@@ -51,6 +51,14 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
             [[-1.2], '-1.2'],
             [[-0.0], '-0.0'],
             [[-0.25], '-0.25'],
+            [[[]], '()'],
+            [[[new Symbol('foo')]], '(foo)'],
+            [[[new Symbol('foo'), new Symbol('bar')]], '(foo bar)'],
+            [[[new Symbol('foo'), new Symbol('bar'), [new Symbol('baz')]]], '(foo bar (baz))'],
+            [
+                [[new Symbol('foo'), new Symbol('bar'), [new Symbol('baz')], new Symbol('qux'), [[new Symbol('quux')]]]],
+                '(foo bar (baz) qux ((quux)))',
+            ],
         ];
     }
 }

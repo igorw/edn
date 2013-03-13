@@ -1,0 +1,68 @@
+{
+    "hash": "dba60f7fa6253b7235f1e0f36bd66b55",
+    "packages": [
+        {
+            "name": "nikic/phlexy",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nikic/Phlexy.git",
+                "reference": "8aba8cb05771bcc56c58f9699e0abd54ca128182"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/nikic/Phlexy/zipball/8aba8cb05771bcc56c58f9699e0abd54ca128182",
+                "reference": "8aba8cb05771bcc56c58f9699e0abd54ca128182",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Phlexy": "lib/"
+                }
+            },
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Nikita Popov"
+                }
+            ],
+            "description": "Lexing experiments in PHP",
+            "keywords": [
+                "lexer",
+                "php"
+            ],
+            "support": {
+                "source": "https://github.com/nikic/Phlexy/tree/master",
+                "issues": "https://github.com/nikic/Phlexy/issues"
+            },
+            "time": "2013-03-13 16:20:49"
+        }
+    ],
+    "packages-dev": [
+
+    ],
+    "aliases": [
+
+    ],
+    "minimum-stability": "stable",
+    "stability-flags": {
+        "nikic/phlexy": 20
+    },
+    "platform": {
+        "php": ">=5.4.0"
+    },
+    "platform-dev": [
+
+    ]
+}

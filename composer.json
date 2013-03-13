@@ -10,7 +10,8 @@
         }
     ],
     "require": {
-        "php": ">=5.4.0"
+        "php": ">=5.4.0",
+        "nikic/phlexy": "~1.0-dev"
     },
     "autoload": {
         "files": ["autoload.php", "src/functions.php"]
