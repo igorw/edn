@@ -14,6 +14,6 @@
         "nikic/phlexy": "~1.0-dev"
     },
     "autoload": {
-        "files": ["autoload.php", "src/functions.php"]
+        "files": ["autoload.php", "src/parser.php"]
     }
 }

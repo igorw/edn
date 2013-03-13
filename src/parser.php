@@ -25,6 +25,10 @@ function tokenize($edn) {
         '(?:[+-]?)(?:[0-9]+)N?'          => 'int',
         '\\('                            => 'list_start',
         '\\)'                            => 'list_end',
+        '\\['                            => 'vector_start',
+        '\\]'                            => 'vector_end',
+        '\\{'                            => 'map_start',
+        '\\}'                            => 'map_end',
     ));
 
     $tokens = $lexer->lex($edn);
@@ -43,26 +47,18 @@ function parse_tokens(array $tokens, $edn) {
     $size = count($tokens);
 
     while ($i < $size) {
-        list($type, $_, $value) = $tokens[$i];
+        $listTypes = [
+            'list_start'    => ['list_start', 'list_end', __NAMESPACE__.'\\EdnList'],
+            'vector_start'  => ['vector_start', 'vector_end', __NAMESPACE__.'\\Vector'],
+            'map_start'  => ['map_start', 'map_end', __NAMESPACE__.'\\Map'],
+        ];
 
-        if ('list_start' === $type) {
-            $level = 0;
-            $j = 0;
-            foreach (array_slice($tokens, $i) as $j => $token) {
-                if ('list_start' === $token[0]) {
-                    $level++;
-                }
+        $type = $tokens[$i][0];
+        if (isset($listTypes[$type])) {
+            $result = parse_subtree($listTypes[$type], $tokens, $i, $edn);
+            $ast[] = $result['subtree'];
+            $i = $result['i'];
 
-                if ('list_end' === $token[0]) {
-                    $level--;
-                }
-
-                if (0 === $level) {
-                    $ast[] = parse_tokens(array_slice($tokens, $i+1, $j-1), $edn);
-                    break;
-                }
-            }
-            $i += $j + 1;
             continue;
         }
 
@@ -70,6 +66,34 @@ function parse_tokens(array $tokens, $edn) {
     }
 
     return $ast;
+}
+
+function parse_subtree($listType, array $tokens, $i, $edn) {
+    list($startToken, $endToken, $dataClass) = $listType;
+
+    $subtree = null;
+    $level = 0;
+    $j = 0;
+
+    foreach (array_slice($tokens, $i) as $j => $token) {
+        if ($startToken === $token[0]) {
+            $level++;
+        }
+
+        if ($endToken === $token[0]) {
+            $level--;
+        }
+
+        if (0 === $level) {
+            $subtree = new $dataClass(parse_tokens(array_slice($tokens, $i+1, $j-1), $edn));
+            break;
+        }
+    }
+
+    return [
+        'subtree'   => $subtree,
+        'i'         => $i+$j+1,
+    ];
 }
 
 function parse_token($token) {

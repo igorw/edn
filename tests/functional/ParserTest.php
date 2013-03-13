@@ -2,6 +2,9 @@
 
 use igorw\edn\Symbol;
 use igorw\edn\Keyword;
+use igorw\edn\EdnList;
+use igorw\edn\Vector;
+use igorw\edn\Map;
 
 class ParserTest extends \PHPUnit_Framework_TestCase {
     /** @dataProvider provideEdn */
@@ -51,14 +54,57 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
             [[-1.2], '-1.2'],
             [[-0.0], '-0.0'],
             [[-0.25], '-0.25'],
-            [[[]], '()'],
-            [[[new Symbol('foo')]], '(foo)'],
-            [[[new Symbol('foo'), new Symbol('bar')]], '(foo bar)'],
-            [[[new Symbol('foo'), new Symbol('bar'), [new Symbol('baz')]]], '(foo bar (baz))'],
+            [[new EdnList([])], '()'],
+            [[new EdnList([new Symbol('foo')])], '(foo)'],
+            [[new EdnList([new Symbol('foo'), new Symbol('bar')])], '(foo bar)'],
             [
-                [[new Symbol('foo'), new Symbol('bar'), [new Symbol('baz')], new Symbol('qux'), [[new Symbol('quux')]]]],
+                [
+                    new EdnList([
+                        new Symbol('foo'),
+                        new Symbol('bar'),
+                        new EdnList([
+                            new Symbol('baz'),
+                        ]),
+                    ]),
+                ],
+                '(foo bar (baz))',
+            ],
+            [
+                [
+                    new EdnList([
+                        new Symbol('foo'),
+                        new Symbol('bar'),
+                        new EdnList([
+                            new Symbol('baz'),
+                        ]),
+                        new Symbol('qux'),
+                        new EdnList([
+                            new EdnList([
+                                new Symbol('quux'),
+                            ]),
+                        ]),
+                    ]),
+                ],
                 '(foo bar (baz) qux ((quux)))',
             ],
+            [[new Vector([])], '[]'],
+            [[new Vector([new Symbol('foo')])], '[foo]'],
+            [[new Vector([new Symbol('foo'), new Symbol('bar')])], '[foo bar]'],
+            [
+                [
+                    new Vector([
+                        new Symbol('foo'),
+                        new Symbol('bar'),
+                        new Vector([
+                            new Symbol('baz')
+                        ]),
+                    ]),
+                ],
+                '[foo bar [baz]]',
+            ],
+            [[new Map([])], '{}'],
+            [[new Map([new Keyword('foo'), new Symbol('bar')])], '{:foo bar}'],
+            [[new Map([new Keyword('foo'), new EdnList([new Symbol('bar')])])], '{:foo (bar)}'],
         ];
     }
 }
