@@ -41,6 +41,16 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
             [[new Keyword('foo/bar')], ':foo/bar'],
             [[new Keyword('foo-bar')], ':foo-bar'],
             [[new Keyword('/')], ':/'],
+            [
+                [
+                    new EdnList([
+                        new Symbol('defproject'),
+                        new Symbol('com.thortech/data.edn'),
+                        "0.1.0-SNAPSHOT",
+                    ]),
+                ],
+                '(defproject com.thortech/data.edn "0.1.0-SNAPSHOT")',
+            ],
             [[1], '1'],
             [[-1], '-1'],
             [[1], '+1'],

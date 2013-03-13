@@ -21,11 +21,11 @@ function tokenize($edn) {
         '"[^"\\\\]*(?:\\\\.[^"\\\\]*)*"' => 'string',
         '[\s,]'                          => 'whitespace',
         '\\\\[a-z]+'                     => 'character',
+        '(?:[+-]?)(?:[0-9]+\.[0-9]+)M?'  => 'float',
+        '(?:[+-]?)(?:[0-9]+)N?'          => 'int',
         get_symbol_regex()               => 'symbol',
         ':(?:'.get_symbol_regex().')'    => 'keyword',
         '#'.get_symbol_regex()           => 'tag',
-        '(?:[+-]?)(?:[0-9]+\.[0-9]+)M?'  => 'float',
-        '(?:[+-]?)(?:[0-9]+)N?'          => 'int',
         '\\('                            => 'list_start',
         '\\)'                            => 'list_end',
         '\\['                            => 'vector_start',
@@ -164,10 +164,10 @@ function resolve_character($edn) {
 function get_symbol_regex() {
     $alpha = 'a-zA-Z';
     $alphaNum = 'a-zA-Z0-9';
-    $chars = '*!_?$%&=';
+    $chars = '*!_?$%&=.+-';
     $extraChars = '.+-';
 
-    $nonNumericRegex = "[$extraChars][$alpha$chars]+|[$alpha$chars][$alphaNum$chars$extraChars]*";
+    $nonNumericRegex = "[$extraChars][$alpha$chars][$alphaNum$chars]*|[$alpha$chars][$alphaNum$chars]*";
 
     $symbolRegex = [];
     $symbolRegex[] = "/{0}[$alpha$chars][$alphaNum$chars]*/(?:$nonNumericRegex)/{0}";
