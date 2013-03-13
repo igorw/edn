@@ -51,6 +51,8 @@ function parse_part($edn) {
         $factor = ($matches[1] && '-' === $matches[1]) ? -1 : 1;
         return (float) $matches[2] * $factor;
     }
+
+    throw new ParserException(sprintf('Could not parse input %s.', $edn));
 }
 
 function resolve_escape_characters($edn) {
