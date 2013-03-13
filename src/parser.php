@@ -16,6 +16,7 @@ function tokenize($edn) {
 
     $lexer = $factory->createLexer(array(
         ';(?:.*)(?:\\n)?'                => 'comment',
+        '#_\s?\S+'                       => 'discard',
         'nil|true|false'                 => 'literal',
         '"[^"\\\\]*(?:\\\\.[^"\\\\]*)*"' => 'string',
         '[\s,]'                          => 'whitespace',
@@ -50,7 +51,7 @@ function parse_tokens(array $tokens, $edn) {
     $ast = [];
 
     $tokens = array_values(array_filter($tokens, function ($token) {
-        return !in_array($token[0], ['whitespace', 'comment']);
+        return !in_array($token[0], ['whitespace', 'comment', 'discard']);
     }));
 
     $i = 0;

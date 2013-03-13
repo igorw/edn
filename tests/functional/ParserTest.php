@@ -184,6 +184,10 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
             [[], "; foo bar baz qux\n"],
             [[], "; foo bar baz qux\n\n"],
             [[new Symbol('quux')], "; foo bar baz qux\n\nquux\n\n"],
+            [[], '#_foo'],
+            [[new Vector([new Symbol('a'), new Symbol('b'), 42])], '[a b #_foo 42]'],
+            [[], '#_ foo'],
+            [[new Vector([new Symbol('a'), new Symbol('b'), 42])], '[a b #_ foo 42]'],
         ];
     }
 }
