@@ -2,10 +2,26 @@
 
 namespace igorw\edn;
 
-class Vector {
-    public $value;
+class Vector implements \ArrayAccess {
+    public $data;
 
-    function __construct($value) {
-        $this->value = $value;
+    function __construct(array $data) {
+        $this->data = $data;
+    }
+
+    function offsetGet($index) {
+        return $this->data[$index];
+    }
+
+    function offsetSet($index, $value) {
+        $this->data[$index] = $value;
+    }
+
+    function offsetUnset($index) {
+        unset($this->data[$index]);
+    }
+
+    function offsetExists($index) {
+        return isset($this->data[$index]);
     }
 }

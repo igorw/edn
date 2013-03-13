@@ -2,10 +2,14 @@
 
 namespace igorw\edn;
 
-class EdnList {
-    public $value;
+class EdnList implements \IteratorAggregate {
+    public $data;
 
-    function __construct($value) {
-        $this->value = $value;
+    function __construct(array $data) {
+        $this->data = $data;
+    }
+
+    function getIterator() {
+        return new \ArrayIterator($this->data);
     }
 }
