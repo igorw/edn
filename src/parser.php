@@ -15,6 +15,7 @@ function tokenize($edn) {
     $factory = new UsingPregReplace(new LexerDataGenerator());
 
     $lexer = $factory->createLexer(array(
+        ';(?:.*)(?:\\n)?'                => 'comment',
         'nil|true|false'                 => 'literal',
         '"[^"\\\\]*(?:\\\\.[^"\\\\]*)*"' => 'string',
         '[\s,]'                          => 'whitespace',
@@ -49,7 +50,7 @@ function parse_tokens(array $tokens, $edn) {
     $ast = [];
 
     $tokens = array_values(array_filter($tokens, function ($token) {
-        return 'whitespace' !== $token[0];
+        return !in_array($token[0], ['whitespace', 'comment']);
     }));
 
     $i = 0;

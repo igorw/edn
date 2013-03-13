@@ -176,6 +176,14 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
                 ],
                 '#myapp/Person {:first "Fred" :last "Mertz"}',
             ],
+            [[], ';'],
+            [[], '; foo'],
+            [[new Symbol('foo')], "; foo\nfoo"],
+            [[new Symbol('foo'), new Symbol('bar')], "; foo\nfoo; bar\nbar"],
+            [[], "; foo bar baz qux"],
+            [[], "; foo bar baz qux\n"],
+            [[], "; foo bar baz qux\n\n"],
+            [[new Symbol('quux')], "; foo bar baz qux\n\nquux\n\n"],
         ];
     }
 }
