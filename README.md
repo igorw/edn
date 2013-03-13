@@ -1,0 +1,13 @@
+# Extensible Data Notation
+
+## Usage
+
+    $edn = file_get_contents('examples/project.clj');
+    $data = igorw\edn\parse($edn);
+
+    print_r($data);
+
+## Todo
+
+* custom tag handlers
+* igorw\edn\encode
