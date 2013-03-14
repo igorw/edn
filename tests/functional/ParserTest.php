@@ -253,6 +253,27 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
             [':foo [#{:what)}]'],
         ];
     }
+
+    /**
+     * @test
+     * @dataProvider provideInvalidEdn
+     * @expectedException Phlexy\LexingException
+     */
+    function parseShouldRejectInvalidSyntax($edn) {
+        igorw\edn\parse($edn);
+    }
+
+    function provideInvalidEdn() {
+        return [
+            ['##'],
+            [':{'],
+            [':}'],
+            [':{}'],
+            [':^'],
+            ['^'],
+            ['_:^'],
+        ];
+    }
 }
 
 class Person {
