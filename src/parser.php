@@ -9,16 +9,18 @@ use Ardent\HashSet;
 use Phlexy\LexerFactory\Stateless\UsingPregReplace;
 use Phlexy\LexerDataGenerator;
 
-function parse($edn) {
+function parse($edn, array $tagHandlers = []) {
     $tokens = tokenize($edn);
+    $ast = parse_tokens($tokens, $edn);
+    $ast = apply_tag_handlers($ast, $tagHandlers);
 
-    return parse_tokens($tokens, $edn);
+    return $ast;
 }
 
 function tokenize($edn) {
     $factory = new UsingPregReplace(new LexerDataGenerator());
 
-    $lexer = $factory->createLexer(array(
+    $lexer = $factory->createLexer([
         ';(?:.*)(?:\\n)?'                => 'comment',
         '#_\s?\S+'                       => 'discard',
         'nil|true|false'                 => 'literal',
@@ -37,7 +39,7 @@ function tokenize($edn) {
         '#\\{'                           => 'set_start',
         '\\{'                            => 'map_start',
         '\\}'                            => 'map_set_end',
-    ));
+    ]);
 
     $tokens = $lexer->lex($edn);
 
@@ -234,9 +236,18 @@ function create_vector(array $data) {
 
 function create_map(array $data) {
     $map = new HashMap('json_encode');
-    foreach ($data as $key => $value) {
-        $map->insert($key, $value);
+
+    $prev = null;
+    foreach ($data as $value) {
+        if (!$prev) {
+            $prev = $value;
+            continue;
+        }
+
+        $map->insert($prev, $value);
+        $prev = null;
     }
+
     return $map;
 }
 
@@ -246,4 +257,25 @@ function create_set(array $data) {
         $set->add($item);
     }
     return $set;
+}
+
+function apply_tag_handlers(array $ast, array $tagHandlers) {
+    if (!$tagHandlers) {
+        return $ast;
+    }
+
+    foreach ($ast as $i => $node) {
+        if ($node instanceof Tagged && isset($tagHandlers[$node->tag->name])) {
+            $handler = $tagHandlers[$node->tag->name];
+            $ast[$i] = $handler($node->value);
+            continue;
+        }
+
+        if ($node instanceof Collection) {
+            $ast[$i] = apply_tag_handlers(iterator_to_array($node), $tagHandlers);
+            continue;
+        }
+    }
+
+    return $ast;
 }

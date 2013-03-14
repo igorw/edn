@@ -10,8 +10,8 @@ use igorw\edn;
 
 class ParserTest extends \PHPUnit_Framework_TestCase {
     /** @dataProvider provideEdn */
-    public function testParse($expected, $sourceEdn) {
-        $data = igorw\edn\parse($sourceEdn);
+    public function testParse($expected, $edn) {
+        $data = igorw\edn\parse($edn);
         $this->assertEquals($expected, $data);
     }
 
@@ -198,5 +198,31 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
             [[], '#_ foo'],
             [[edn\create_vector([Symbol::get('a'), Symbol::get('b'), 42])], '[a b #_ foo 42]'],
         ];
+    }
+
+    public function testParseWithTagHandlers() {
+        $expected = [new Person('Fred', 'Mertz')];
+        $edn = '#myapp/Person {:first "Fred" :last "Mertz"}';
+
+        $data = igorw\edn\parse($edn, [
+            'myapp/Person' => function ($node) {
+                return new Person(
+                    $node[Keyword::get('first')],
+                    $node[Keyword::get('last')]
+                );
+            },
+        ]);
+
+        $this->assertEquals($expected, $data);
+    }
+}
+
+class Person {
+    public $firstName;
+    public $lastName;
+
+    function __construct($firstName, $lastName) {
+        $this->firstName = $firstName;
+        $this->lastName = $lastName;
     }
 }

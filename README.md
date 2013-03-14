@@ -11,5 +11,4 @@ Parser for the [edn](https://github.com/edn-format/edn) format.
 
 ## Todo
 
-* custom tag handlers
 * igorw\edn\encode
