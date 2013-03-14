@@ -29,6 +29,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
             [["foo\tbar"], '"foo\tbar"'],
             [["GET /foo HTTP/1.1\r\n"], '"GET /foo HTTP/1.1\r\n"'],
             [['foo"'], '"foo\\""'],
+            [['foo\\'], '"foo\\\\"'],
             [['c'], '\c'],
             [["\n", "\t", ' '], '\newline \tab \space'],
             [[Symbol::get('foo')], 'foo'],

@@ -181,10 +181,11 @@ function resolve_literal($edn) {
 
 function resolve_string($edn) {
     return strtr($edn, [
-        '\t' => "\t",
-        '\r' => "\r",
-        '\n' => "\n",
-        '\"' => "\"",
+        '\t'    => "\t",
+        '\r'    => "\r",
+        '\n'    => "\n",
+        '\"'    => "\"",
+        '\\\\'  => "\\",
     ]);
 }
 
