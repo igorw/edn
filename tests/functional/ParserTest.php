@@ -284,6 +284,14 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
             [':foo/'],
             ['#/foo'],
             ['#foo/'],
+            ['foo/bar/baz'],
+            ['foo/bar/baz/qux'],
+            ['foo/bar/baz/qux/'],
+            ['foo/bar/baz/qux/quux'],
+            ['//'],
+            ['///'],
+            ['/foo//'],
+            ['///foo'],
         ];
     }
 }

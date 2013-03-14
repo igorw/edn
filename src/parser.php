@@ -201,7 +201,7 @@ function resolve_character($edn) {
 
 function get_symbol_regex() {
     $part = "(?:[a-zA-Z*!_?$%&=]|[-+.][a-zA-Z.*+!_?$%&=:#-])[a-zA-Z0-9.*+!_?$%&=:#-]*";
-    return "/|(?<!/)$part(?:/$part)?(?!/)";
+    return "/(?!/)|(?<!/)$part(?:/$part)?(?!/)(?!$part)";
 }
 
 function resolve_int($edn) {
