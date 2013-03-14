@@ -5,6 +5,7 @@ namespace igorw\edn;
 use Ardent\LinkedList;
 use Ardent\Vector;
 use Ardent\Map;
+use Ardent\HashMap;
 use Ardent\Set;
 
 function encode($ast) {
@@ -69,10 +70,10 @@ function encode_node($node) {
     if (is_array($node)) {
         return !count($node) || isset($node[0])
             ? encode_list(new \ArrayIterator($node))
-            : encode_map(new \ArrayIterator(convert_keys_to_keywords($node)));
+            : encode_map(convert_assoc_to_map($node));
     }
 
-    throw new \InvalidArgumentException(sprintf('Cannot parse node of type %s.', gettype($node)));
+    throw new \InvalidArgumentException(sprintf('Cannot encode node of type %s.', gettype($node)));
 }
 
 function is_literal($node) {
@@ -125,10 +126,8 @@ function encode_map($map) {
 
 function encode_map_elements($map) {
     $encoded = [];
-    foreach ($map as $key => $value) {
-        // todo: fix issue with object keys in ardent's HashMapIterator
-        // $encoded[] = encode_node($key).' '.encode_node($value);
-        $encoded[] = $key.' '.encode_node($value);
+    foreach ($map->keys() as $key) {
+        $encoded[] = encode_node($key).' '.encode_node($map->get($key));
     }
     return implode(' ', $encoded);
 }
@@ -141,9 +140,10 @@ function encode_tagged($tagged) {
     return '#'.$tagged->tag->name.' '.encode_node($tagged->value);
 }
 
-function convert_keys_to_keywords($assoc) {
-    return array_combine(
-        array_map(__NAMESPACE__.'\\Keyword::get', array_keys($assoc)),
-        array_values($assoc)
-    );
+function convert_assoc_to_map($assoc) {
+    $map = new HashMap('serialize');
+    foreach ($assoc as $key => $value) {
+        $map->insert(Keyword::get($key), $value);
+    }
+    return $map;
 }
