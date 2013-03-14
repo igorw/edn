@@ -3,10 +3,10 @@
 namespace igorw\edn;
 
 class Symbol {
-    static public $symbols;
+    static public $symbols = [];
     public $value;
 
-    private function __construct($value) {
+    protected function __construct($value) {
         $this->value = $value;
     }
 

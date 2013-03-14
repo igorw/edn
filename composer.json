@@ -15,6 +15,6 @@
         "morrisonlevi/ardent": "dev-master"
     },
     "autoload": {
-        "files": ["autoload.php", "src/parser.php"]
+        "files": ["autoload.php", "src/parser.php", "src/encoder.php"]
     }
 }
