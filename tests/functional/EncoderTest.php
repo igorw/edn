@@ -186,4 +186,10 @@ class EncoderTest extends \PHPUnit_Framework_TestCase {
             ],
         ];
     }
+
+    /** @test */
+    function arrayShouldImplicitlyBecomeList() {
+        $data = [[Symbol::get('foo')]];
+        $this->assertEquals('(foo)', igorw\edn\encode($data));
+    }
 }

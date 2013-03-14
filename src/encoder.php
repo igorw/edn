@@ -62,6 +62,10 @@ function encode_node($node) {
         return encode_tagged($node);
     }
 
+    if (is_array($node)) {
+        return encode_list(new \ArrayIterator($node));
+    }
+
     throw new \InvalidArgumentException(sprintf('Cannot parse node of type %s.', gettype($node)));
 }
 
