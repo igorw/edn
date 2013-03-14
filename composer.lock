@@ -1,5 +1,5 @@
 {
-    "hash": "7a2369a3ff0b472f4aa81238293c8451",
+    "hash": "aaa2065b22729432b03aeac29a7cf889",
     "packages": [
         {
             "name": "morrisonlevi/ardent",
@@ -7,18 +7,23 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/morrisonlevi/Ardent.git",
-                "reference": "f14ff53226c0d9c977cd3a155099aa510d90901f"
+                "reference": "7b05df36696a1009dcce52fb4e4dde277fb00bc6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/morrisonlevi/Ardent/zipball/f14ff53226c0d9c977cd3a155099aa510d90901f",
-                "reference": "f14ff53226c0d9c977cd3a155099aa510d90901f",
+                "url": "https://api.github.com/repos/morrisonlevi/Ardent/zipball/7b05df36696a1009dcce52fb4e4dde277fb00bc6",
+                "reference": "7b05df36696a1009dcce52fb4e4dde277fb00bc6",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.4.11"
             },
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.6-dev"
+                }
+            },
             "autoload": {
                 "psr-0": {
                     "Ardent": "src/"
@@ -44,7 +49,7 @@
                 "php",
                 "spl"
             ],
-            "time": "2013-02-10 05:43:46"
+            "time": "2013-03-14 17:22:42"
         },
         {
             "name": "nikic/phlexy",
