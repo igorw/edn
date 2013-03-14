@@ -74,6 +74,7 @@
                     "Phlexy": "lib/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "BSD-3-Clause"
             ],
@@ -87,10 +88,6 @@
                 "lexer",
                 "php"
             ],
-            "support": {
-                "source": "https://github.com/nikic/Phlexy/tree/master",
-                "issues": "https://github.com/nikic/Phlexy/issues"
-            },
             "time": "2013-03-13 16:20:49"
         }
     ],
