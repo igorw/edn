@@ -10,12 +10,12 @@ use igorw\edn;
 
 class ParserTest extends \PHPUnit_Framework_TestCase {
     /** @dataProvider provideEdn */
-    public function testParse($expected, $edn) {
+    function testParse($expected, $edn) {
         $data = igorw\edn\parse($edn);
         $this->assertEquals($expected, $data);
     }
 
-    public function provideEdn() {
+    function provideEdn() {
         return [
             [[], ''],
             [[null], 'nil'],
@@ -200,7 +200,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
         ];
     }
 
-    public function testParseWithTagHandler() {
+    function testParseWithTagHandler() {
         $expected = [new Person('Fred', 'Mertz')];
         $edn = '#myapp/Person {:first "Fred" :last "Mertz"}';
 
@@ -216,7 +216,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($expected, $data);
     }
 
-    public function testParseWithInstTagHandler() {
+    function testParseWithInstTagHandler() {
         $edn = '#inst "1985-04-12T23:20:50.52Z"';
 
         $data = igorw\edn\parse($edn, [

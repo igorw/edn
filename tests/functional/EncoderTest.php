@@ -10,12 +10,12 @@ use igorw\edn;
 
 class EncoderTest extends \PHPUnit_Framework_TestCase {
     /** @dataProvider provideAst */
-    public function testParse($expected, $ast) {
+    function testParse($expected, $ast) {
         $edn = igorw\edn\encode($ast);
         $this->assertEquals($expected, $edn);
     }
 
-    public function provideAst() {
+    function provideAst() {
         return [
             ['', []],
             ['nil', [null]],
