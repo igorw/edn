@@ -198,6 +198,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
             [[edn\create_vector([Symbol::get('a'), Symbol::get('b'), 42])], '[a b #_foo 42]'],
             [[], '#_ foo'],
             [[edn\create_vector([Symbol::get('a'), Symbol::get('b'), 42])], '[a b #_ foo 42]'],
+            [['#_ foo'], '"#_ foo"'],
         ];
     }
 
@@ -227,6 +228,30 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
         ]);
 
         $this->assertEquals('1985-04-12 23:20:50', $data[0]->format('Y-m-d H:i:s'));
+    }
+
+    /**
+     * @test
+     * @dataProvider provideUnmatchedParensEdn
+     * @expectedException igorw\edn\ParserException
+     */
+    function parseShouldRejectUnmatchedParens($edn) {
+        igorw\edn\parse($edn);
+    }
+
+    function provideUnmatchedParensEdn() {
+        return [
+            ['{'],
+            ['}'],
+            ['{{'],
+            ['}}'],
+            ['{ "foo"'],
+            ['{ "foo" :bar'],
+            ['foo bar :baz}'],
+            ['[}'],
+            ['#{{[}}'],
+            [':foo [#{:what)}]'],
+        ];
     }
 }
 

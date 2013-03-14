@@ -57,14 +57,14 @@ function parse_tokens(array $tokens, $edn) {
     $ast = [];
 
     $tokens = array_values(array_filter($tokens, function ($token) {
-        return !in_array($token[0], ['whitespace', 'comment', 'discard']);
+        return !in_array(token_type($token), ['whitespace', 'comment', 'discard']);
     }));
 
     $i = 0;
     $size = count($tokens);
 
     while ($i < $size) {
-        $type = $tokens[$i][0];
+        $type = token_type($tokens[$i]);
         if (isset($dataFactories[$type])) {
             $result = parse_subtree($dataFactories[$type], $tokens, $i, $edn);
             $ast[] = $result['subtree'];
@@ -82,32 +82,63 @@ function parse_tokens(array $tokens, $edn) {
 }
 
 function parse_subtree($dataFactory, array $tokens, $i, $edn) {
-    $startTypes = ['list_start', 'vector_start', 'map_start', 'set_start'];
-    $endTypes = ['list_end', 'vector_end', 'map_set_end'];
-
     $subtree = null;
-    $level = 0;
+    $level = [];
     $j = 0;
 
     foreach (array_slice($tokens, $i) as $j => $token) {
-        if (in_array($token[0], $startTypes, true)) {
-            $level++;
+        if (token_is_start_type($token)) {
+            $level[] = token_type($token);
         }
 
-        if (in_array($token[0], $endTypes, true)) {
-            $level--;
+        if (token_is_end_type($token)) {
+            $matchingStartType = array_pop($level);
+            if (token_matches_start_type($token, $matchingStartType)) {
+                throw new ParserException(sprintf('Invalid matching parens in input %s.', $edn));
+            }
         }
 
-        if (0 === $level) {
+        if (0 === count($level)) {
             $subtree = $dataFactory(parse_tokens(array_slice($tokens, $i+1, $j-1), $edn));
             break;
         }
+    }
+
+    if (0 !== count($level)) {
+        throw new ParserException(sprintf('Unmatched parens in input %s.', $edn));
     }
 
     return [
         'subtree'   => $subtree,
         'i'         => $i+$j+1,
     ];
+}
+
+function token_is_start_type(array $token) {
+    $startTypes = ['list_start', 'vector_start', 'map_start', 'set_start'];
+
+    return in_array(token_type($token), $startTypes, true);
+}
+
+function token_is_end_type(array $token) {
+    $endTypes = ['list_end', 'vector_end', 'map_set_end'];
+
+    return in_array(token_type($token), $endTypes, true);
+}
+
+function token_matches_start_type(array $token, $startType) {
+    $matchingTypes = [
+        'list_start'    => 'list_end',
+        'vector_start'  => 'vector_end',
+        'map_start'     => 'map_set_end',
+        'set_start'     => 'map_set_end',
+    ];
+
+    return token_type($token) !== $matchingTypes[$startType];
+}
+
+function token_type(array $token) {
+    return $token[0];
 }
 
 function parse_token(array $token) {
