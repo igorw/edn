@@ -208,7 +208,7 @@ function get_symbol_regex() {
     $nonNumericRegex = "[$extraChars][$alpha$chars][$alphaNum$chars]*|[$alpha$chars][$alphaNum$chars]*";
 
     $symbolRegex = [];
-    $symbolRegex[] = "(?<!/)[$alpha$chars][$alphaNum$chars]*/(?:$nonNumericRegex)(?!/)";
+    $symbolRegex[] = "[$alpha$chars][$alphaNum$chars]*/(?:$nonNumericRegex)";
     $symbolRegex[] = $nonNumericRegex;
     $symbolRegex[] = '/';
 
