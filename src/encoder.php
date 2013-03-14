@@ -61,6 +61,8 @@ function encode_node($node) {
     if ($node instanceof Tagged) {
         return encode_tagged($node);
     }
+
+    throw new \InvalidArgumentException(sprintf('Cannot parse node of type %s.', gettype($node)));
 }
 
 function is_literal($node) {
