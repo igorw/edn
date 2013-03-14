@@ -39,16 +39,16 @@ class EncoderTest extends \PHPUnit_Framework_TestCase {
             [':foo/bar', [Keyword::get('foo/bar')]],
             [':foo-bar', [Keyword::get('foo-bar')]],
             [':/', [Keyword::get('/')]],
-            // [
-            //     '(defproject com.thortech/data.edn "0.1.0-SNAPSHOT")',
-            //     [
-            //         edn\create_list([
-            //             Symbol::get('defproject'),
-            //             Symbol::get('com.thortech/data.edn'),
-            //             "0.1.0-SNAPSHOT",
-            //         ]),
-            //     ],
-            // ],
+            [
+                '(defproject com.thortech/data.edn "0.1.0-SNAPSHOT")',
+                [
+                    edn\create_list([
+                        Symbol::get('defproject'),
+                        Symbol::get('com.thortech/data.edn'),
+                        "0.1.0-SNAPSHOT",
+                    ]),
+                ],
+            ],
             ['1', [1]],
             ['-1', [-1]],
             ['+1', [1]],
