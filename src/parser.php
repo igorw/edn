@@ -153,6 +153,7 @@ function resolve_string($edn) {
         '\t' => "\t",
         '\r' => "\r",
         '\n' => "\n",
+        '\"' => "\"",
     ]);
 }
 

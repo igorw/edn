@@ -27,6 +27,7 @@ class EncoderTest extends \PHPUnit_Framework_TestCase {
             ['"foo\nbar"', ["foo\nbar"]],
             ['"foo\tbar"', ["foo\tbar"]],
             ['"GET /foo HTTP/1.1\r\n"', ["GET /foo HTTP/1.1\r\n"]],
+            ['"foo\\""', ['foo"']],
             ['\c', ['c']],
             ['\newline \tab \space', ["\n", "\t", ' ']],
             ['foo', [Symbol::get('foo')]],
