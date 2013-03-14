@@ -2,6 +2,13 @@
 
 Parser for the [edn](https://github.com/edn-format/edn) format. In PHP.
 
+The parser internally relies on [Phlexy](https://github.com/nikic/Phlexy) for
+lexing.
+
+This library uses the [Ardent](https://github.com/morrisonlevi/Ardent) data
+structures to represent lists, vectors, maps and sets. Those are the ones you
+will get when parsing edn.
+
 ## Usage
 
 ### Parsing
