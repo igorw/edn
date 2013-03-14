@@ -2,6 +2,10 @@
 
 namespace igorw\edn;
 
+use Ardent\LinkedList;
+use Ardent\Vector;
+use Ardent\HashMap;
+use Ardent\HashSet;
 use Phlexy\LexerFactory\Stateless\UsingPregReplace;
 use Phlexy\LexerDataGenerator;
 
@@ -41,11 +45,11 @@ function tokenize($edn) {
 }
 
 function parse_tokens(array $tokens, $edn) {
-    $dataClasses = [
-        'list_start'    => __NAMESPACE__.'\\EdnList',
-        'vector_start'  => __NAMESPACE__.'\\Vector',
-        'map_start'     => __NAMESPACE__.'\\Map',
-        'set_start'     => __NAMESPACE__.'\\Set',
+    $dataFactories = [
+        'list_start'    => __NAMESPACE__.'\\create_list',
+        'vector_start'  => __NAMESPACE__.'\\create_vector',
+        'map_start'     => __NAMESPACE__.'\\create_map',
+        'set_start'     => __NAMESPACE__.'\\create_set',
     ];
 
     $ast = [];
@@ -59,8 +63,8 @@ function parse_tokens(array $tokens, $edn) {
 
     while ($i < $size) {
         $type = $tokens[$i][0];
-        if (isset($dataClasses[$type])) {
-            $result = parse_subtree($dataClasses[$type], $tokens, $i, $edn);
+        if (isset($dataFactories[$type])) {
+            $result = parse_subtree($dataFactories[$type], $tokens, $i, $edn);
             $ast[] = $result['subtree'];
             $i = $result['i'];
 
@@ -75,7 +79,7 @@ function parse_tokens(array $tokens, $edn) {
     return $ast;
 }
 
-function parse_subtree($dataClass, array $tokens, $i, $edn) {
+function parse_subtree($dataFactory, array $tokens, $i, $edn) {
     $startTypes = ['list_start', 'vector_start', 'map_start', 'set_start'];
     $endTypes = ['list_end', 'vector_end', 'map_set_end'];
 
@@ -93,7 +97,7 @@ function parse_subtree($dataClass, array $tokens, $i, $edn) {
         }
 
         if (0 === $level) {
-            $subtree = new $dataClass(parse_tokens(array_slice($tokens, $i+1, $j-1), $edn));
+            $subtree = $dataFactory(parse_tokens(array_slice($tokens, $i+1, $j-1), $edn));
             break;
         }
     }
@@ -213,4 +217,33 @@ function wrap_tags(array $ast) {
     }
 
     return array_values($ast);
+}
+
+function create_list(array $data) {
+    $list = new LinkedList();
+    foreach ($data as $item) {
+        $list->push($item);
+    }
+    return $list;
+}
+
+function create_vector(array $data) {
+    $r = new \ReflectionClass('Ardent\Vector');
+    return $r->newInstanceArgs($data);
+}
+
+function create_map(array $data) {
+    $map = new HashMap('json_encode');
+    foreach ($data as $key => $value) {
+        $map->insert($key, $value);
+    }
+    return $map;
+}
+
+function create_set(array $data) {
+    $set = new HashSet('json_encode');
+    foreach ($data as $item) {
+        $set->add($item);
+    }
+    return $set;
 }

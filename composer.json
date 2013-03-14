@@ -11,7 +11,8 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "nikic/phlexy": "~1.0-dev"
+        "nikic/phlexy": "~1.0-dev",
+        "morrisonlevi/ardent": "dev-master"
     },
     "autoload": {
         "files": ["autoload.php", "src/parser.php"]

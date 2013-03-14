@@ -2,12 +2,11 @@
 
 use igorw\edn\Symbol;
 use igorw\edn\Keyword;
-use igorw\edn\EdnList;
-use igorw\edn\Vector;
 use igorw\edn\Map;
 use igorw\edn\Set;
 use igorw\edn\Tag;
 use igorw\edn\Tagged;
+use igorw\edn;
 
 class ParserTest extends \PHPUnit_Framework_TestCase {
     /** @dataProvider provideEdn */
@@ -43,7 +42,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
             [[Keyword::get('/')], ':/'],
             [
                 [
-                    new EdnList([
+                    edn\create_list([
                         Symbol::get('defproject'),
                         Symbol::get('com.thortech/data.edn'),
                         "0.1.0-SNAPSHOT",
@@ -67,15 +66,15 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
             [[-1.2], '-1.2'],
             [[-0.0], '-0.0'],
             [[-0.25], '-0.25'],
-            [[new EdnList([])], '()'],
-            [[new EdnList([Symbol::get('foo')])], '(foo)'],
-            [[new EdnList([Symbol::get('foo'), Symbol::get('bar')])], '(foo bar)'],
+            [[edn\create_list([])], '()'],
+            [[edn\create_list([Symbol::get('foo')])], '(foo)'],
+            [[edn\create_list([Symbol::get('foo'), Symbol::get('bar')])], '(foo bar)'],
             [
                 [
-                    new EdnList([
+                    edn\create_list([
                         Symbol::get('foo'),
                         Symbol::get('bar'),
-                        new EdnList([
+                        edn\create_list([
                             Symbol::get('baz'),
                         ]),
                     ]),
@@ -84,15 +83,15 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
             ],
             [
                 [
-                    new EdnList([
+                    edn\create_list([
                         Symbol::get('foo'),
                         Symbol::get('bar'),
-                        new EdnList([
+                        edn\create_list([
                             Symbol::get('baz'),
                         ]),
                         Symbol::get('qux'),
-                        new EdnList([
-                            new EdnList([
+                        edn\create_list([
+                            edn\create_list([
                                 Symbol::get('quux'),
                             ]),
                         ]),
@@ -100,31 +99,31 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
                 ],
                 '(foo bar (baz) qux ((quux)))',
             ],
-            [[new Vector([])], '[]'],
-            [[new Vector([Symbol::get('foo')])], '[foo]'],
-            [[new Vector([Symbol::get('foo'), Symbol::get('bar')])], '[foo bar]'],
+            [[edn\create_vector([])], '[]'],
+            [[edn\create_vector([Symbol::get('foo')])], '[foo]'],
+            [[edn\create_vector([Symbol::get('foo'), Symbol::get('bar')])], '[foo bar]'],
             [
                 [
-                    new Vector([
+                    edn\create_vector([
                         Symbol::get('foo'),
                         Symbol::get('bar'),
-                        new Vector([
+                        edn\create_vector([
                             Symbol::get('baz')
                         ]),
                     ]),
                 ],
                 '[foo bar [baz]]',
             ],
-            [[new Map([])], '{}'],
-            [[new Map([Keyword::get('foo'), Symbol::get('bar')])], '{:foo bar}'],
-            [[new Map([Keyword::get('foo'), new EdnList([Symbol::get('bar')])])], '{:foo (bar)}'],
-            [[new Set([])], '#{}'],
-            [[new Set([Symbol::get('foo')])], '#{foo}'],
-            [[new Set([Symbol::get('foo'), Symbol::get('bar')])], '#{foo bar}'],
+            [[edn\create_map([])], '{}'],
+            [[edn\create_map([Keyword::get('foo'), Symbol::get('bar')])], '{:foo bar}'],
+            [[edn\create_map([Keyword::get('foo'), edn\create_list([Symbol::get('bar')])])], '{:foo (bar)}'],
+            [[edn\create_set([])], '#{}'],
+            [[edn\create_set([Symbol::get('foo')])], '#{foo}'],
+            [[edn\create_set([Symbol::get('foo'), Symbol::get('bar')])], '#{foo bar}'],
             [
                 [
-                    new Set([
-                        new EdnList([
+                    edn\create_set([
+                        edn\create_list([
                             Symbol::get('foo'),
                             Symbol::get('bar'),
                         ]),
@@ -134,8 +133,8 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
             ],
             [
                 [
-                    new Set([
-                        new Map([
+                    edn\create_set([
+                        edn\create_map([
                             Keyword::get('foo'),
                             Symbol::get('bar'),
                         ]),
@@ -151,7 +150,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
             ],
             [
                 [
-                    new Map([
+                    edn\create_map([
                         Keyword::get('first'),
                         'Fred',
                         Keyword::get('last'),
@@ -164,7 +163,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
                 [
                     new Tagged(
                         new Tag('myapp/Person'),
-                        new EdnList([
+                        edn\create_list([
                             Keyword::get('foo'),
                             Keyword::get('bar'),
                         ])
@@ -176,7 +175,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
                 [
                     new Tagged(
                         new Tag('myapp/Person'),
-                        new Map([
+                        edn\create_map([
                             Keyword::get('first'),
                             'Fred',
                             Keyword::get('last'),
@@ -195,9 +194,9 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
             [[], "; foo bar baz qux\n\n"],
             [[Symbol::get('quux')], "; foo bar baz qux\n\nquux\n\n"],
             [[], '#_foo'],
-            [[new Vector([Symbol::get('a'), Symbol::get('b'), 42])], '[a b #_foo 42]'],
+            [[edn\create_vector([Symbol::get('a'), Symbol::get('b'), 42])], '[a b #_foo 42]'],
             [[], '#_ foo'],
-            [[new Vector([Symbol::get('a'), Symbol::get('b'), 42])], '[a b #_ foo 42]'],
+            [[edn\create_vector([Symbol::get('a'), Symbol::get('b'), 42])], '[a b #_ foo 42]'],
         ];
     }
 }

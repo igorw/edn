@@ -1,6 +1,51 @@
 {
-    "hash": "3cb12f8afb10a37e6d062815b0797a01",
+    "hash": "4eac2fa4dbbe00b8ffa35146a898f0e1",
     "packages": [
+        {
+            "name": "morrisonlevi/ardent",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/morrisonlevi/Ardent.git",
+                "reference": "f14ff53226c0d9c977cd3a155099aa510d90901f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/morrisonlevi/Ardent/zipball/f14ff53226c0d9c977cd3a155099aa510d90901f",
+                "reference": "f14ff53226c0d9c977cd3a155099aa510d90901f",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.11"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Ardent": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Levi Morrison",
+                    "email": "levim@php.net",
+                    "homepage": "http://morrisonlevi.github.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A healthy library for PHP",
+            "homepage": "https://github.com/morrisonlevi/Ardent",
+            "keywords": [
+                "ardent",
+                "library",
+                "php",
+                "spl"
+            ],
+            "time": "2013-02-10 05:43:46"
+        },
         {
             "name": "nikic/phlexy",
             "version": "dev-master",
@@ -57,7 +102,8 @@
     ],
     "minimum-stability": "stable",
     "stability-flags": {
-        "nikic/phlexy": 20
+        "nikic/phlexy": 20,
+        "morrisonlevi/ardent": 20
     },
     "platform": {
         "php": ">=5.4.0"
