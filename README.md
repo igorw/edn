@@ -1,6 +1,6 @@
 # Extensible Data Notation
 
-Parser for the [edn](https://github.com/edn-format/edn) format.
+Parser for the [edn](https://github.com/edn-format/edn) format. In PHP.
 
 ## Usage
 
