@@ -67,7 +67,9 @@ function encode_node($node) {
     }
 
     if (is_array($node)) {
-        return encode_list(new \ArrayIterator($node));
+        return !count($node) || isset($node[0])
+            ? encode_list(new \ArrayIterator($node))
+            : encode_map(new \ArrayIterator(convert_keys_to_keywords($node)));
     }
 
     throw new \InvalidArgumentException(sprintf('Cannot parse node of type %s.', gettype($node)));
@@ -137,4 +139,11 @@ function encode_set($set) {
 
 function encode_tagged($tagged) {
     return '#'.$tagged->tag->name.' '.encode_node($tagged->value);
+}
+
+function convert_keys_to_keywords($assoc) {
+    return array_combine(
+        array_map(__NAMESPACE__.'\\Keyword::get', array_keys($assoc)),
+        array_values($assoc)
+    );
 }
