@@ -31,7 +31,7 @@ function tokenize($edn) {
         '(?:[+-]?)(?:[0-9]+)N?'          => 'int',
         get_symbol_regex()               => 'symbol',
         ':(?:'.get_symbol_regex().')'    => 'keyword',
-        '#'.get_symbol_regex()           => 'tag',
+        '#(?:'.get_symbol_regex().')'    => 'tag',
         '\\('                            => 'list_start',
         '\\)'                            => 'list_end',
         '\\['                            => 'vector_start',

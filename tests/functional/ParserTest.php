@@ -200,7 +200,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
         ];
     }
 
-    public function testParseWithTagHandlers() {
+    public function testParseWithTagHandler() {
         $expected = [new Person('Fred', 'Mertz')];
         $edn = '#myapp/Person {:first "Fred" :last "Mertz"}';
 
@@ -214,6 +214,18 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
         ]);
 
         $this->assertEquals($expected, $data);
+    }
+
+    public function testParseWithInstTagHandler() {
+        $edn = '#inst "1985-04-12T23:20:50.52Z"';
+
+        $data = igorw\edn\parse($edn, [
+            'inst' => function ($node) {
+                return new \DateTime($node);
+            },
+        ]);
+
+        $this->assertEquals('1985-04-12 23:20:50', $data[0]->format('Y-m-d H:i:s'));
     }
 }
 
