@@ -1,4 +1,10 @@
 {
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/igorw/Ardent"
+        }
+    ],
     "name": "igorw/edn",
     "description": "Extensible Data Notation Parser.",
     "keywords": ["edn"],
@@ -12,7 +18,7 @@
     "require": {
         "php": ">=5.4.0",
         "nikic/phlexy": "~1.0-dev",
-        "morrisonlevi/ardent": "dev-master"
+        "morrisonlevi/spl": "dev-hash-map-keys"
     },
     "autoload": {
         "files": ["autoload.php", "src/parser.php", "src/encoder.php"]
