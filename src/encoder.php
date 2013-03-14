@@ -7,7 +7,11 @@ use Ardent\Vector;
 use Ardent\Map;
 use Ardent\Set;
 
-function encode(array $ast) {
+function encode($ast) {
+    if (!is_array($ast)) {
+        $ast = [$ast];
+    }
+
     return implode(' ', array_map(__NAMESPACE__.'\\encode_node', $ast));
 }
 
