@@ -116,7 +116,7 @@ function encode_map($map) {
 function encode_map_elements($map) {
     $encoded = [];
     foreach ($map as $key => $value) {
-        // todo: fixme
+        // todo: fix issue with object keys in ardent's HashMapIterator
         // $encoded[] = encode_node($key).' '.encode_node($value);
         $encoded[] = $key.' '.encode_node($value);
     }
