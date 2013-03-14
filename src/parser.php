@@ -236,7 +236,7 @@ function create_vector(array $data) {
 }
 
 function create_map(array $data) {
-    $map = new HashMap('json_encode');
+    $map = new HashMap('serialize');
 
     $prev = null;
     foreach ($data as $value) {
@@ -253,7 +253,7 @@ function create_map(array $data) {
 }
 
 function create_set(array $data) {
-    $set = new HashSet('json_encode');
+    $set = new HashSet('serialize');
     foreach ($data as $item) {
         $set->add($item);
     }
