@@ -126,8 +126,9 @@ function encode_map($map) {
 
 function encode_map_elements($map) {
     $encoded = [];
-    foreach ($map->keys() as $key) {
-        $encoded[] = encode_node($key).' '.encode_node($map->get($key));
+    $iterator = $map->getIterator();
+    for ($iterator->rewind(); $iterator->valid(); $iterator->next()) {
+        $encoded[] = encode_node($iterator->key()).' '.encode_node($iterator->current());
     }
     return implode(' ', $encoded);
 }

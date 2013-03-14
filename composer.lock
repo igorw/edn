@@ -1,18 +1,18 @@
 {
-    "hash": "17ec534d7a0f4b45a2883203ce39d6c6",
+    "hash": "7a2369a3ff0b472f4aa81238293c8451",
     "packages": [
         {
-            "name": "morrisonlevi/spl",
-            "version": "dev-hash-map-keys",
+            "name": "morrisonlevi/ardent",
+            "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/igorw/Ardent.git",
-                "reference": "e1d07674c7e11df31d14909ed9668991fa468f81"
+                "url": "https://github.com/morrisonlevi/Ardent.git",
+                "reference": "f14ff53226c0d9c977cd3a155099aa510d90901f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/igorw/Ardent/zipball/e1d07674c7e11df31d14909ed9668991fa468f81",
-                "reference": "e1d07674c7e11df31d14909ed9668991fa468f81",
+                "url": "https://api.github.com/repos/morrisonlevi/Ardent/zipball/f14ff53226c0d9c977cd3a155099aa510d90901f",
+                "reference": "f14ff53226c0d9c977cd3a155099aa510d90901f",
                 "shasum": ""
             },
             "require": {
@@ -24,6 +24,7 @@
                     "Ardent": "src/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -43,10 +44,7 @@
                 "php",
                 "spl"
             ],
-            "support": {
-                "source": "https://github.com/igorw/Ardent/tree/hash-map-keys"
-            },
-            "time": "2013-03-14 04:34:00"
+            "time": "2013-02-10 05:43:46"
         },
         {
             "name": "nikic/phlexy",
@@ -102,7 +100,7 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "nikic/phlexy": 20,
-        "morrisonlevi/spl": 20
+        "morrisonlevi/ardent": 20
     },
     "platform": {
         "php": ">=5.4.0"
