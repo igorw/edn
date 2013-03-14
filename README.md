@@ -44,6 +44,8 @@ You can also define custom tag handlers and pass them as a second argument to
         },
     ]);
 
+    // [new Person('Fred', 'Mertz')]
+
 ### Encoding
 
 If you want to take an in-memory data structure and encode it as edn, you can
