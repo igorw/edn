@@ -200,19 +200,8 @@ function resolve_character($edn) {
 }
 
 function get_symbol_regex() {
-    $alpha = 'a-zA-Z';
-    $alphaNum = 'a-zA-Z0-9';
-    $chars = '*!_?$%&=.+-';
-    $extraChars = '.+-';
-
-    $nonNumericRegex = "[$extraChars][$alpha$chars][$alphaNum$chars]*|[$alpha$chars][$alphaNum$chars]*";
-
-    $symbolRegex = [];
-    $symbolRegex[] = "[$alpha$chars][$alphaNum$chars]*/(?:$nonNumericRegex)";
-    $symbolRegex[] = $nonNumericRegex;
-    $symbolRegex[] = '/';
-
-    return implode('|', $symbolRegex);
+    $part = "(?:[a-zA-Z*!_?$%&=]|[-+.][a-zA-Z.*+!_?$%&=:#-])[a-zA-Z0-9.*+!_?$%&=:#-]*";
+    return "/|$part(?:/$part)?";
 }
 
 function resolve_int($edn) {

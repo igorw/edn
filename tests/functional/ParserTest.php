@@ -36,11 +36,13 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
             [[Symbol::get('foo/bar')], 'foo/bar'],
             [[Symbol::get('foo-bar')], 'foo-bar'],
             [[Symbol::get('/')], '/'],
+            [[Symbol::get('ab#:cde')], 'ab#:cde'],
             [[Keyword::get('foo')], ':foo'],
             [[Keyword::get('foo'), Keyword::get('bar')], ':foo :bar'],
             [[Keyword::get('foo/bar')], ':foo/bar'],
             [[Keyword::get('foo-bar')], ':foo-bar'],
             [[Keyword::get('/')], ':/'],
+            [[Keyword::get('ab#:cde')], ':ab#:cde'],
             [
                 [
                     edn\create_list([
@@ -186,6 +188,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
                 ],
                 '#myapp/Person {:first "Fred" :last "Mertz"}',
             ],
+            [[new Tagged(new Tag('ab#:cde'), 'foo')], '#ab#:cde "foo"'],
             [[], ';'],
             [[], '; foo'],
             [[Symbol::get('foo')], "; foo\nfoo"],
@@ -266,12 +269,15 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
     function provideInvalidEdn() {
         return [
             ['##'],
+            ['#:foo'],
+            [':#foo'],
             [':{'],
             [':}'],
             [':{}'],
             [':^'],
             ['^'],
             ['_:^'],
+            ['.9'],
         ];
     }
 }
