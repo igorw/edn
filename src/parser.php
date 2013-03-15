@@ -256,8 +256,9 @@ function create_list(array $data) {
 }
 
 function create_vector(array $data) {
-    $r = new \ReflectionClass('Ardent\Vector');
-    return $r->newInstanceArgs($data);
+    $vector = new Vector();
+    $vector->appendAll(new \ArrayIterator($data));
+    return $vector;
 }
 
 function create_map(array $data) {

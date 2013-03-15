@@ -7,12 +7,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/morrisonlevi/Ardent.git",
-                "reference": "7b05df36696a1009dcce52fb4e4dde277fb00bc6"
+                "reference": "c37610d66b6d8a65ed3d8e88273454ce0fa6d901"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/morrisonlevi/Ardent/zipball/7b05df36696a1009dcce52fb4e4dde277fb00bc6",
-                "reference": "7b05df36696a1009dcce52fb4e4dde277fb00bc6",
+                "url": "https://api.github.com/repos/morrisonlevi/Ardent/zipball/c37610d66b6d8a65ed3d8e88273454ce0fa6d901",
+                "reference": "c37610d66b6d8a65ed3d8e88273454ce0fa6d901",
                 "shasum": ""
             },
             "require": {
@@ -49,7 +49,7 @@
                 "php",
                 "spl"
             ],
-            "time": "2013-03-14 17:22:42"
+            "time": "2013-03-15 21:16:55"
         },
         {
             "name": "nikic/phlexy",
