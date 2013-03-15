@@ -339,6 +339,7 @@ function apply_tag_handlers_collection(Collection $node, callable $filter) {
     return $node;
 }
 
+// mutates state
 function filter_list(Collection $node, $key, $value, callable $filter) {
     $newValue = $filter($value);
     if ($value != $newValue) {
@@ -346,6 +347,7 @@ function filter_list(Collection $node, $key, $value, callable $filter) {
     }
 }
 
+// mutates state
 function filter_map(Map $node, $key, $value, callable $filter) {
     $newKey = $filter($key);
     $newValue = $filter($value);
@@ -357,6 +359,7 @@ function filter_map(Map $node, $key, $value, callable $filter) {
     }
 }
 
+// mutates state
 function filter_set(Set $node, $key, $value, callable $filter) {
     $newValue = $filter($value);
     if ($value != $newValue) {
