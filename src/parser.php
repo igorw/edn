@@ -312,39 +312,48 @@ function apply_tag_handlers_node($node, array $tagHandlers) {
 function apply_tag_handlers_collection(Collection $node, array $tagHandlers) {
     $node = clone $node;
 
+    $fns = [
+        'Ardent\\LinkedList' => __NAMESPACE__.'\\apply_tag_handlers_array_access',
+        'Ardent\\Vector'     => __NAMESPACE__.'\\apply_tag_handlers_array_access',
+        'Ardent\\HashMap'    => __NAMESPACE__.'\\apply_tag_handlers_map',
+        'Ardent\\HashSet'    => __NAMESPACE__.'\\apply_tag_handlers_set',
+    ];
+
+    $fn = $fns[get_class($node)];
+
     $iterator = $node->getIterator();
     for ($iterator->rewind(); $iterator->valid(); $iterator->next()) {
-        if ($node instanceof LinkedList || $node instanceof Vector) {
-            $key = $iterator->key();
-            $value = $iterator->current();
-            $newValue = apply_tag_handlers_node($value, $tagHandlers);
-            if ($value != $newValue) {
-                $node[$key] = $newValue;
-            }
-        }
+        $key = $iterator->key();
+        $value = $iterator->current();
 
-        if ($node instanceof Map) {
-            $key = $iterator->key();
-            $newKey = apply_tag_handlers_node($key, $tagHandlers);
-            $value = $iterator->current();
-            $newValue = apply_tag_handlers_node($value, $tagHandlers);
-            if ($key != $newKey) {
-                $node->remove($key);
-                $node->insert($newKey, $newValue);
-            } elseif ($value != $newValue) {
-                $node->insert($key, $newValue);
-            }
-        }
-
-        if ($node instanceof Set) {
-            $value = $iterator->current();
-            $newValue = apply_tag_handlers_node($value, $tagHandlers);
-            if ($value != $newValue) {
-                $node->remove($value);
-                $node->add($newValue);
-            }
-        }
+        $fn($node, $key, $value, $tagHandlers);
     }
 
     return $node;
+}
+
+function apply_tag_handlers_array_access(\ArrayAccess $node, $key, $value, $tagHandlers) {
+    $newValue = apply_tag_handlers_node($value, $tagHandlers);
+    if ($value != $newValue) {
+        $node[$key] = $newValue;
+    }
+}
+
+function apply_tag_handlers_map(Map $node, $key, $value, $tagHandlers) {
+    $newKey = apply_tag_handlers_node($key, $tagHandlers);
+    $newValue = apply_tag_handlers_node($value, $tagHandlers);
+    if ($key != $newKey) {
+        $node->remove($key);
+        $node->insert($newKey, $newValue);
+    } elseif ($value != $newValue) {
+        $node->insert($key, $newValue);
+    }
+}
+
+function apply_tag_handlers_set(Set $node, $key, $value, $tagHandlers) {
+    $newValue = apply_tag_handlers_node($value, $tagHandlers);
+    if ($value != $newValue) {
+        $node->remove($value);
+        $node->add($newValue);
+    }
 }
