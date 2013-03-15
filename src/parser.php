@@ -306,20 +306,20 @@ function apply_tag_handlers_node($node, array $tagHandlers) {
         $filter = function ($value) use ($tagHandlers) {
             return apply_tag_handlers_node($value, $tagHandlers);
         };
-        $node = apply_tag_handlers_collection($node, $filter);
+        $node = map_collection($node, $filter);
     }
 
     return $node;
 }
 
-function apply_tag_handlers_collection(Collection $node, callable $filter) {
+function map_collection(Collection $node, callable $filter) {
     $node = clone $node;
 
     $fns = [
-        'Ardent\\LinkedList' => __NAMESPACE__.'\\filter_list',
-        'Ardent\\Vector'     => __NAMESPACE__.'\\filter_list',
-        'Ardent\\HashMap'    => __NAMESPACE__.'\\filter_map',
-        'Ardent\\HashSet'    => __NAMESPACE__.'\\filter_set',
+        'Ardent\\LinkedList' => __NAMESPACE__.'\\mutate_map_list',
+        'Ardent\\Vector'     => __NAMESPACE__.'\\mutate_map_list',
+        'Ardent\\HashMap'    => __NAMESPACE__.'\\mutate_map_map',
+        'Ardent\\HashSet'    => __NAMESPACE__.'\\mutate_map_set',
     ];
 
     $class = get_class($node);
@@ -339,16 +339,14 @@ function apply_tag_handlers_collection(Collection $node, callable $filter) {
     return $node;
 }
 
-// mutates state
-function filter_list(Collection $node, $key, $value, callable $filter) {
+function mutate_map_list(Collection $node, $key, $value, callable $filter) {
     $newValue = $filter($value);
     if ($value != $newValue) {
         $node[$key] = $newValue;
     }
 }
 
-// mutates state
-function filter_map(Map $node, $key, $value, callable $filter) {
+function mutate_map_map(Map $node, $key, $value, callable $filter) {
     $newKey = $filter($key);
     $newValue = $filter($value);
     if ($key != $newKey) {
@@ -359,8 +357,7 @@ function filter_map(Map $node, $key, $value, callable $filter) {
     }
 }
 
-// mutates state
-function filter_set(Set $node, $key, $value, callable $filter) {
+function mutate_map_set(Set $node, $key, $value, callable $filter) {
     $newValue = $filter($value);
     if ($value != $newValue) {
         $node->remove($value);
