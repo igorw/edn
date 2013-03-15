@@ -2,6 +2,7 @@
 
 namespace igorw\edn;
 
+/** @api */
 class Symbol {
     static public $symbols = [];
     public $value;

@@ -2,6 +2,7 @@
 
 namespace igorw\edn;
 
+/** @api */
 class Keyword extends Symbol {
     static public $symbols = [];
 
