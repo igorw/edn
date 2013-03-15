@@ -241,6 +241,48 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals('1985-04-12 23:20:50', $data[0]->format('Y-m-d H:i:s'));
     }
 
+    /** @dataProvider provideNestedTagEdn */
+    function testParseWithNestedTagHandler($expected, $edn) {
+        $data = igorw\edn\parse($edn, [
+            'myapp/Foo' => function ($node) {
+                return new Foo($node);
+            },
+        ]);
+
+        $this->assertEquals($expected, $data);
+    }
+
+    function provideNestedTagEdn() {
+        return [
+            [
+                [edn\create_list([new Foo('bar')])],
+                '(#myapp/Foo "bar")',
+            ],
+            [
+                [edn\create_vector([new Foo('bar')])],
+                '[#myapp/Foo "bar"]',
+            ],
+            [
+                [edn\create_map([Keyword::get('foo'), new Foo('bar')])],
+                '{:foo #myapp/Foo "bar"}',
+            ],
+            [
+                [edn\create_set([new Foo('bar')])],
+                '#{#myapp/Foo "bar"}',
+            ],
+            [
+                [
+                    edn\create_set([
+                        edn\create_vector([
+                            edn\create_list([new Foo('bar')]),
+                        ]),
+                    ]),
+                ],
+                '#{[(#myapp/Foo "bar")]}',
+            ],
+        ];
+    }
+
     /**
      * @test
      * @dataProvider provideUnmatchedParensEdn
@@ -273,5 +315,13 @@ class Person {
     function __construct($firstName, $lastName) {
         $this->firstName = $firstName;
         $this->lastName = $lastName;
+    }
+}
+
+class Foo {
+    public $value;
+
+    function __construct($value) {
+        $this->value = $value;
     }
 }

@@ -6,6 +6,9 @@ use Ardent\LinkedList;
 use Ardent\Vector;
 use Ardent\HashMap;
 use Ardent\HashSet;
+use Ardent\Collection;
+use Ardent\Map;
+use Ardent\Set;
 use Phlexy\LexerFactory\Stateless\UsingPregReplace;
 use Phlexy\LexerDataGenerator;
 
@@ -287,17 +290,61 @@ function apply_tag_handlers(array $ast, array $tagHandlers) {
     }
 
     foreach ($ast as $i => $node) {
-        if ($node instanceof Tagged && isset($tagHandlers[$node->tag->name])) {
-            $handler = $tagHandlers[$node->tag->name];
-            $ast[$i] = $handler($node->value);
-            continue;
-        }
-
-        if ($node instanceof Collection) {
-            $ast[$i] = apply_tag_handlers(iterator_to_array($node), $tagHandlers);
-            continue;
-        }
+        $ast[$i] = apply_tag_handlers_node($node, $tagHandlers);
     }
 
     return $ast;
+}
+
+function apply_tag_handlers_node($node, array $tagHandlers) {
+    if ($node instanceof Tagged && isset($tagHandlers[$node->tag->name])) {
+        $handler = $tagHandlers[$node->tag->name];
+        $node = $handler($node->value);
+    }
+
+    if ($node instanceof Collection) {
+        $node = apply_tag_handlers_collection($node, $tagHandlers);
+    }
+
+    return $node;
+}
+
+function apply_tag_handlers_collection(Collection $node, array $tagHandlers) {
+    $node = clone $node;
+
+    $iterator = $node->getIterator();
+    for ($iterator->rewind(); $iterator->valid(); $iterator->next()) {
+        if ($node instanceof LinkedList || $node instanceof Vector) {
+            $key = $iterator->key();
+            $value = $iterator->current();
+            $newValue = apply_tag_handlers_node($value, $tagHandlers);
+            if ($value != $newValue) {
+                $node[$key] = $newValue;
+            }
+        }
+
+        if ($node instanceof Map) {
+            $key = $iterator->key();
+            $newKey = apply_tag_handlers_node($key, $tagHandlers);
+            $value = $iterator->current();
+            $newValue = apply_tag_handlers_node($value, $tagHandlers);
+            if ($key != $newKey) {
+                $node->remove($key);
+                $node->insert($newKey, $newValue);
+            } elseif ($value != $newValue) {
+                $node->insert($key, $newValue);
+            }
+        }
+
+        if ($node instanceof Set) {
+            $value = $iterator->current();
+            $newValue = apply_tag_handlers_node($value, $tagHandlers);
+            if ($value != $newValue) {
+                $node->remove($value);
+                $node->add($newValue);
+            }
+        }
+    }
+
+    return $node;
 }
