@@ -303,20 +303,23 @@ function apply_tag_handlers_node($node, array $tagHandlers) {
     }
 
     if ($node instanceof Collection) {
-        $node = apply_tag_handlers_collection($node, $tagHandlers);
+        $filter = function ($value) use ($tagHandlers) {
+            return apply_tag_handlers_node($value, $tagHandlers);
+        };
+        $node = apply_tag_handlers_collection($node, $filter);
     }
 
     return $node;
 }
 
-function apply_tag_handlers_collection(Collection $node, array $tagHandlers) {
+function apply_tag_handlers_collection(Collection $node, callable $filter) {
     $node = clone $node;
 
     $fns = [
-        'Ardent\\LinkedList' => __NAMESPACE__.'\\apply_tag_handlers_list',
-        'Ardent\\Vector'     => __NAMESPACE__.'\\apply_tag_handlers_list',
-        'Ardent\\HashMap'    => __NAMESPACE__.'\\apply_tag_handlers_map',
-        'Ardent\\HashSet'    => __NAMESPACE__.'\\apply_tag_handlers_set',
+        'Ardent\\LinkedList' => __NAMESPACE__.'\\filter_list',
+        'Ardent\\Vector'     => __NAMESPACE__.'\\filter_list',
+        'Ardent\\HashMap'    => __NAMESPACE__.'\\filter_map',
+        'Ardent\\HashSet'    => __NAMESPACE__.'\\filter_set',
     ];
 
     $class = get_class($node);
@@ -330,22 +333,22 @@ function apply_tag_handlers_collection(Collection $node, array $tagHandlers) {
         $key = $iterator->key();
         $value = $iterator->current();
 
-        $fn($node, $key, $value, $tagHandlers);
+        $fn($node, $key, $value, $filter);
     }
 
     return $node;
 }
 
-function apply_tag_handlers_list(Collection $node, $key, $value, $tagHandlers) {
-    $newValue = apply_tag_handlers_node($value, $tagHandlers);
+function filter_list(Collection $node, $key, $value, callable $filter) {
+    $newValue = $filter($value);
     if ($value != $newValue) {
         $node[$key] = $newValue;
     }
 }
 
-function apply_tag_handlers_map(Map $node, $key, $value, $tagHandlers) {
-    $newKey = apply_tag_handlers_node($key, $tagHandlers);
-    $newValue = apply_tag_handlers_node($value, $tagHandlers);
+function filter_map(Map $node, $key, $value, callable $filter) {
+    $newKey = $filter($key);
+    $newValue = $filter($value);
     if ($key != $newKey) {
         $node->remove($key);
         $node->insert($newKey, $newValue);
@@ -354,8 +357,8 @@ function apply_tag_handlers_map(Map $node, $key, $value, $tagHandlers) {
     }
 }
 
-function apply_tag_handlers_set(Set $node, $key, $value, $tagHandlers) {
-    $newValue = apply_tag_handlers_node($value, $tagHandlers);
+function filter_set(Set $node, $key, $value, callable $filter) {
+    $newValue = $filter($value);
     if ($value != $newValue) {
         $node->remove($value);
         $node->add($newValue);
