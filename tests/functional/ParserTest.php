@@ -213,7 +213,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
         ];
     }
 
-    function testParseWithTagHandler() {
+    function testParseWithPersonTagHandler() {
         $expected = [new Person('Fred', 'Mertz')];
         $edn = '#myapp/Person {:first "Fred" :last "Mertz"}';
 
