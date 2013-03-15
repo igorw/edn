@@ -313,8 +313,8 @@ function apply_tag_handlers_collection(Collection $node, array $tagHandlers) {
     $node = clone $node;
 
     $fns = [
-        'Ardent\\LinkedList' => __NAMESPACE__.'\\apply_tag_handlers_array_access',
-        'Ardent\\Vector'     => __NAMESPACE__.'\\apply_tag_handlers_array_access',
+        'Ardent\\LinkedList' => __NAMESPACE__.'\\apply_tag_handlers_list',
+        'Ardent\\Vector'     => __NAMESPACE__.'\\apply_tag_handlers_list',
         'Ardent\\HashMap'    => __NAMESPACE__.'\\apply_tag_handlers_map',
         'Ardent\\HashSet'    => __NAMESPACE__.'\\apply_tag_handlers_set',
     ];
@@ -332,7 +332,7 @@ function apply_tag_handlers_collection(Collection $node, array $tagHandlers) {
     return $node;
 }
 
-function apply_tag_handlers_array_access(\ArrayAccess $node, $key, $value, $tagHandlers) {
+function apply_tag_handlers_list(Collection $node, $key, $value, $tagHandlers) {
     $newValue = apply_tag_handlers_node($value, $tagHandlers);
     if ($value != $newValue) {
         $node[$key] = $newValue;
