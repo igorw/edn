@@ -18,6 +18,13 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
     function provideEdn() {
         return [
             [[], ''],
+            [[], ' '],
+            [[], '   '],
+            [[], ','],
+            [[], ',,,'],
+            [[], ',,, '],
+            [[], ', ,,'],
+            [[], ' , '],
             [[null], 'nil'],
             [[true], 'true'],
             [[false], 'false'],
