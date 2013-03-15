@@ -8,6 +8,7 @@ use Ardent\Map;
 use Ardent\HashMap;
 use Ardent\Set;
 
+/** @api */
 function encode($ast) {
     if (!is_array($ast)) {
         $ast = [$ast];

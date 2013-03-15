@@ -12,6 +12,7 @@ use Ardent\Set;
 use Phlexy\LexerFactory\Stateless\UsingPregReplace;
 use Phlexy\LexerDataGenerator;
 
+/** @api */
 function parse($edn, array $tagHandlers = []) {
     $tokens = tokenize($edn);
     $ast = parse_tokens($tokens, $edn);
