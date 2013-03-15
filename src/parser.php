@@ -319,7 +319,11 @@ function apply_tag_handlers_collection(Collection $node, array $tagHandlers) {
         'Ardent\\HashSet'    => __NAMESPACE__.'\\apply_tag_handlers_set',
     ];
 
-    $fn = $fns[get_class($node)];
+    $class = get_class($node);
+    if (!isset($fns[$class])) {
+        throw new ParserException(sprintf('Unrecognized collection of type %s.', $class));
+    }
+    $fn = $fns[$class];
 
     $iterator = $node->getIterator();
     for ($iterator->rewind(); $iterator->valid(); $iterator->next()) {
