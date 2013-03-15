@@ -267,6 +267,10 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
                 '{:foo #myapp/Foo "bar"}',
             ],
             [
+                [edn\create_map([new Foo(Keyword::get('foo')), 'bar'])],
+                '{#myapp/Foo :foo "bar"}',
+            ],
+            [
                 [edn\create_set([new Foo('bar')])],
                 '#{#myapp/Foo "bar"}',
             ],
