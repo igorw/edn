@@ -126,12 +126,10 @@ function encode_map($map) {
 }
 
 function encode_map_elements($map) {
-    $encoded = [];
-    $iterator = $map->getIterator();
-    for ($iterator->rewind(); $iterator->valid(); $iterator->next()) {
-        $encoded[] = encode_node($iterator->key()).' '.encode_node($iterator->current());
-    }
-    return implode(' ', $encoded);
+    $encoded = $map->map(function ($value, $key) {
+        return encode_node($key).' '.encode_node($value);
+    });
+    return implode(' ', iterator_to_array($encoded, false));
 }
 
 function encode_set($set) {

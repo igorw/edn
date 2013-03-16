@@ -330,13 +330,9 @@ function map_collection(Collection $node, callable $filter) {
     }
     $fn = $fns[$class];
 
-    $iterator = $node->getIterator();
-    for ($iterator->rewind(); $iterator->valid(); $iterator->next()) {
-        $key = $iterator->key();
-        $value = $iterator->current();
-
+    $node->each(function ($value, $key) use ($fn, $node, $filter) {
         $fn($node, $key, $value, $filter);
-    }
+    });
 
     return $node;
 }
