@@ -23,6 +23,8 @@ To parse edn, just use the `parse` function:
 You can also define custom tag handlers and pass them as a second argument to
 `parse`:
 
+    use igorw\edn;
+
     class Person {
         public $firstName;
         public $lastName;
@@ -35,11 +37,11 @@ You can also define custom tag handlers and pass them as a second argument to
 
     $edn = '#myapp/Person {:first "Fred" :last "Mertz"}';
 
-    $data = igorw\edn\parse($edn, [
+    $data = edn\parse($edn, [
         'myapp/Person' => function ($node) {
             return new Person(
-                $node[Keyword::get('first')],
-                $node[Keyword::get('last')]
+                $node[edn\keyword('first')],
+                $node[edn\keyword('last')]
             );
         },
     ]);
@@ -51,19 +53,18 @@ You can also define custom tag handlers and pass them as a second argument to
 If you want to take an in-memory data structure and encode it as edn, you can
 use the `encode` function:
 
-    use igorw\edn\Symbol;
-    use igorw\edn\Keyword;
+    use igorw\edn;
 
     $person = new Ardent\HashMap();
-    $person[Keyword::get('name')] = 'igorw';
+    $person[edn\keyword('name')] = 'igorw';
 
     $list = new Ardent\LinkedList();
-    $list->push(Symbol::get('foo'));
-    $list->push(Symbol::get('bar'));
-    $list->push(Symbol::get('baz'));
-    $list->push(Keyword::get('qux'));
+    $list->push(edn\symbol('foo'));
+    $list->push(edn\symbol('bar'));
+    $list->push(edn\symbol('baz'));
+    $list->push(edn\keyword('qux'));
     $list->push(1.0);
     $list->push($person);
 
-    $edn = igorw\edn\encode([$list]);
+    $edn = edn\encode([$list]);
     // (foo bar baz :qux 1.0 {:name "igorw"})

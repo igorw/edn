@@ -21,6 +21,10 @@ function parse($edn, array $tagHandlers = []) {
     return $ast;
 }
 
+/** @api */
+class ParserException extends \InvalidArgumentException {
+}
+
 function tokenize($edn) {
     $factory = new UsingPregReplace(new LexerDataGenerator());
 

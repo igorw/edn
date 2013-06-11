@@ -1,5 +1,9 @@
 {
-    "hash": "aaa2065b22729432b03aeac29a7cf889",
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
+    ],
+    "hash": "570ddae8e4e69e90a095b5ccf3bd2c1a",
     "packages": [
         {
             "name": "morrisonlevi/ardent",
@@ -7,16 +11,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/morrisonlevi/Ardent.git",
-                "reference": "1f1f80f0914ea21cc4546a9e916cc919f011eeb5"
+                "reference": "6a78169fda14bef01605152b45be1bab69a72af5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/morrisonlevi/Ardent/zipball/1f1f80f0914ea21cc4546a9e916cc919f011eeb5",
-                "reference": "1f1f80f0914ea21cc4546a9e916cc919f011eeb5",
+                "url": "https://api.github.com/repos/morrisonlevi/Ardent/zipball/6a78169fda14bef01605152b45be1bab69a72af5",
+                "reference": "6a78169fda14bef01605152b45be1bab69a72af5",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.4.11"
+                "php": ">=5.4"
             },
             "type": "library",
             "extra": {
@@ -49,7 +53,7 @@
                 "php",
                 "spl"
             ],
-            "time": "2013-03-16 00:02:47"
+            "time": "2013-06-04 14:33:34"
         },
         {
             "name": "nikic/phlexy",

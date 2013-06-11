@@ -15,7 +15,7 @@
         "morrisonlevi/ardent": "0.6.*@dev"
     },
     "autoload": {
-        "files": ["autoload.php", "src/parser.php", "src/encoder.php"]
+        "files": ["src/datastructure.php", "src/parser.php", "src/encoder.php"]
     },
     "extra": {
         "branch-alias": {
