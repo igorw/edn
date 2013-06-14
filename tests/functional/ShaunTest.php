@@ -26,7 +26,9 @@ class ShaunTest extends \PHPUnit_Framework_TestCase {
     function testParseWithInvalidEdn($ednFile) {
         $edn = file_get_contents($ednFile);
 
-        igorw\edn\parse($edn);
+        $data = igorw\edn\parse($edn);
+
+        $this->fail(sprintf('Expected parser to fail on %s, but got: %s', json_encode($edn), print_r($data, true)));
     }
 
     function provideInvalidEdnFile() {
