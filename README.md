@@ -68,3 +68,8 @@ use the `encode` function:
 
     $edn = edn\encode([$list]);
     // (foo bar baz :qux 1.0 {:name "igorw"})
+
+## Tests
+
+This library runs against the
+[shaunxcode/edn-tests](https://github.com/shaunxcode/edn-tests) suite.
