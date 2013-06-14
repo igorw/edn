@@ -45,12 +45,14 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
             [[Symbol::get('foo-bar')], 'foo-bar'],
             [[Symbol::get('/')], '/'],
             [[Symbol::get('ab#:cde')], 'ab#:cde'],
+            [[Symbol::get('+')], '+'],
             [[Keyword::get('foo')], ':foo'],
             [[Keyword::get('foo'), Keyword::get('bar')], ':foo :bar'],
             [[Keyword::get('foo/bar')], ':foo/bar'],
             [[Keyword::get('foo-bar')], ':foo-bar'],
             [[Keyword::get('/')], ':/'],
             [[Keyword::get('ab#:cde')], ':ab#:cde'],
+            [[Keyword::get('+')], ':+'],
             [
                 [
                     edn\create_list([

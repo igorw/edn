@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "570ddae8e4e69e90a095b5ccf3bd2c1a",
+    "hash": "357d2ae0e5275ad5db47b4824604d80b",
     "packages": [
         {
             "name": "morrisonlevi/ardent",
@@ -101,7 +101,17 @@
         }
     ],
     "packages-dev": [
-
+        {
+            "name": "shaunxcode/edn-tests",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/shaunxcode/edn-tests",
+                "reference": "master"
+            },
+            "type": "library",
+            "time": "2013-06-14 23:29:26"
+        }
     ],
     "aliases": [
 
@@ -109,7 +119,8 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "nikic/phlexy": 20,
-        "morrisonlevi/ardent": 20
+        "morrisonlevi/ardent": 20,
+        "shaunxcode/edn-tests": 20
     },
     "platform": {
         "php": ">=5.4.0"

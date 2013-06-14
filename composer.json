@@ -14,6 +14,9 @@
         "nikic/phlexy": "~1.0-dev",
         "morrisonlevi/ardent": "0.6.*@dev"
     },
+    "require-dev": {
+        "shaunxcode/edn-tests": "dev-master"
+    },
     "autoload": {
         "files": ["src/datastructure.php", "src/parser.php", "src/encoder.php"]
     },
@@ -21,5 +24,19 @@
         "branch-alias": {
             "dev-master": "1.0-dev"
         }
-    }
+    },
+    "repositories": [
+        {
+            "type": "package",
+            "package": {
+                "name": "shaunxcode/edn-tests",
+                "version": "dev-master",
+                "source": {
+                    "type": "git",
+                    "url": "https://github.com/shaunxcode/edn-tests",
+                    "reference": "master"
+                }
+            }
+        }
+    ]
 }
