@@ -9,7 +9,9 @@ class LexerTest extends \PHPUnit_Framework_TestCase {
      * @expectedException Phlexy\LexingException
      */
     function parseShouldRejectInvalidSyntax($edn) {
-        tokenize($edn);
+        $data = tokenize($edn);
+
+        $this->fail(sprintf('Expected parser to fail on %s, but got: %s', json_encode($edn), print_r($data, true)));
     }
 
     function provideInvalidEdn() {
@@ -38,6 +40,9 @@ class LexerTest extends \PHPUnit_Framework_TestCase {
             ['///'],
             ['/foo//'],
             ['///foo'],
+            ['\newline0.1'],
+            ['\newline.'],
+            ['.\newline'],
         ];
     }
 }

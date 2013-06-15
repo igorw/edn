@@ -37,25 +37,29 @@ function try_tokenize($edn) {
 function tokenize($edn) {
     $factory = new UsingPregReplace(new LexerDataGenerator());
 
+    $delim = function ($pattern) {
+        return "(?:$pattern)(?=[\s,\\)\\]\\};]|$)";
+    };
+
     $lexer = $factory->createLexer([
-        ';(?:.*)(?:\\n)?'                               => 'comment',
-        '#_\s?\S+'                                      => 'discard',
-        'nil|true|false'                                => 'literal',
-        '"[^"\\\\]*(?:\\\\.[^"\\\\]*)*"'                => 'string',
-        '[\s,]'                                         => 'whitespace',
-        '\\\\(?:newline|return|space|tab|[a-z](?!\w))'  => 'character',
-        '(?:[+-]?)(?:[0-9]+\.[0-9]+)M?(?!\w)'           => 'float',
-        '(?:[+-]?)(?:[0-9]+)N?(?!\w)'                   => 'int',
-        get_symbol_regex()                              => 'symbol',
-        ':(?:'.get_symbol_regex().')'                   => 'keyword',
-        '#(?:'.get_symbol_regex().')'                   => 'tag',
-        '\\('                                           => 'list_start',
-        '\\)'                                           => 'list_end',
-        '\\['                                           => 'vector_start',
-        '\\]'                                           => 'vector_end',
-        '#\\{'                                          => 'set_start',
-        '\\{'                                           => 'map_start',
-        '\\}'                                           => 'map_set_end',
+        ';(?:.*)(?:\\n)?'                           => 'comment',
+        $delim('#_\s?\S+')                          => 'discard',
+        $delim('nil|true|false')                    => 'literal',
+        $delim('"[^"\\\\]*(?:\\\\.[^"\\\\]*)*"')    => 'string',
+        '[\s,]'                                     => 'whitespace',
+        $delim('\\\\(?:newline|return|space|tab|[a-z])')    => 'character',
+        $delim('(?:[+-]?)(?:[0-9]+\.[0-9]+)M?')     => 'float',
+        $delim('(?:[+-]?)(?:[0-9]+)N?')             => 'int',
+        $delim(get_symbol_regex())                  => 'symbol',
+        $delim(':(?:'.get_symbol_regex().')')       => 'keyword',
+        $delim('#(?:'.get_symbol_regex().')')       => 'tag',
+        '\\('                                       => 'list_start',
+        '\\)'                                       => 'list_end',
+        '\\['                                       => 'vector_start',
+        '\\]'                                       => 'vector_end',
+        '#\\{'                                      => 'set_start',
+        '\\{'                                       => 'map_start',
+        '\\}'                                       => 'map_set_end',
     ]);
 
     $tokens = $lexer->lex($edn);

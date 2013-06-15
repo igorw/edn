@@ -46,6 +46,9 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
             [[Symbol::get('/')], '/'],
             [[Symbol::get('ab#:cde')], 'ab#:cde'],
             [[Symbol::get('+')], '+'],
+            [[Symbol::get('truefalse')], 'truefalse'],
+            [[Symbol::get('true.')], 'true.'],
+            [[Symbol::get('.true')], '.true'],
             [[Keyword::get('foo')], ':foo'],
             [[Keyword::get('foo'), Keyword::get('bar')], ':foo :bar'],
             [[Keyword::get('foo/bar')], ':foo/bar'],
@@ -53,6 +56,9 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
             [[Keyword::get('/')], ':/'],
             [[Keyword::get('ab#:cde')], ':ab#:cde'],
             [[Keyword::get('+')], ':+'],
+            [[Keyword::get('truefalse')], ':truefalse'],
+            [[Keyword::get('true.')], ':true.'],
+            [[Keyword::get('.true')], ':.true'],
             [
                 [
                     edn\create_list([
