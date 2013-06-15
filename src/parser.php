@@ -38,24 +38,24 @@ function tokenize($edn) {
     $factory = new UsingPregReplace(new LexerDataGenerator());
 
     $lexer = $factory->createLexer([
-        ';(?:.*)(?:\\n)?'                       => 'comment',
-        '#_\s?\S+'                              => 'discard',
-        'nil|true|false'                        => 'literal',
-        '"[^"\\\\]*(?:\\\\.[^"\\\\]*)*"'        => 'string',
-        '[\s,]'                                 => 'whitespace',
-        '\\\\[a-z]+'                            => 'character',
-        '(?:[+-]?)(?:[0-9]+\.[0-9]+)M?(?!\w)'   => 'float',
-        '(?:[+-]?)(?:[0-9]+)N?(?!\w)'           => 'int',
-        get_symbol_regex()                      => 'symbol',
-        ':(?:'.get_symbol_regex().')'           => 'keyword',
-        '#(?:'.get_symbol_regex().')'           => 'tag',
-        '\\('                                   => 'list_start',
-        '\\)'                                   => 'list_end',
-        '\\['                                   => 'vector_start',
-        '\\]'                                   => 'vector_end',
-        '#\\{'                                  => 'set_start',
-        '\\{'                                   => 'map_start',
-        '\\}'                                   => 'map_set_end',
+        ';(?:.*)(?:\\n)?'                               => 'comment',
+        '#_\s?\S+'                                      => 'discard',
+        'nil|true|false'                                => 'literal',
+        '"[^"\\\\]*(?:\\\\.[^"\\\\]*)*"'                => 'string',
+        '[\s,]'                                         => 'whitespace',
+        '\\\\(?:newline|return|space|tab|[a-z](?!\w))'  => 'character',
+        '(?:[+-]?)(?:[0-9]+\.[0-9]+)M?(?!\w)'           => 'float',
+        '(?:[+-]?)(?:[0-9]+)N?(?!\w)'                   => 'int',
+        get_symbol_regex()                              => 'symbol',
+        ':(?:'.get_symbol_regex().')'                   => 'keyword',
+        '#(?:'.get_symbol_regex().')'                   => 'tag',
+        '\\('                                           => 'list_start',
+        '\\)'                                           => 'list_end',
+        '\\['                                           => 'vector_start',
+        '\\]'                                           => 'vector_end',
+        '#\\{'                                          => 'set_start',
+        '\\{'                                           => 'map_start',
+        '\\}'                                           => 'map_set_end',
     ]);
 
     $tokens = $lexer->lex($edn);
@@ -213,10 +213,6 @@ function resolve_character($edn) {
         'space'     => ' ',
         'tab'       => "\t",
     ];
-
-    if (!isset($chars[$edn]) && strlen($edn) > 1) {
-        throw new ParserException(sprintf('Could not parse input \%s as character.', $edn));
-    }
 
     return isset($chars[$edn]) ? $chars[$edn] : $edn;
 }
