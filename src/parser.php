@@ -269,14 +269,17 @@ function create_map(array $data) {
     $map = new HashMap('serialize');
 
     $prev = null;
+    $key = true;
     foreach ($data as $value) {
-        if (!$prev) {
+        if ($key) {
             $prev = $value;
+            $key = false;
             continue;
         }
 
         $map->insert($prev, $value);
         $prev = null;
+        $key = true;
     }
 
     return $map;
