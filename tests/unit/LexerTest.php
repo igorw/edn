@@ -11,7 +11,7 @@ class LexerTest extends \PHPUnit_Framework_TestCase {
     function parseShouldRejectInvalidSyntax($edn) {
         $data = tokenize($edn);
 
-        $this->fail(sprintf('Expected parser to fail on %s, but got: %s', json_encode($edn), print_r($data, true)));
+        $this->fail(sprintf('Expected lexer to fail on %s, but got: %s', json_encode($edn), print_r($data, true)));
     }
 
     function provideInvalidEdn() {
