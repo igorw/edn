@@ -21,7 +21,7 @@ class ShaunTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @dataProvider provideInvalidEdnFile
-     * @expectedException Phlexy\LexingException
+     * @expectedException igorw\edn\ParserException
      */
     function testParseWithInvalidEdn($ednFile) {
         $edn = file_get_contents($ednFile);

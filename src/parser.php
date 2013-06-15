@@ -11,10 +11,11 @@ use Ardent\Map;
 use Ardent\Set;
 use Phlexy\LexerFactory\Stateless\UsingPregReplace;
 use Phlexy\LexerDataGenerator;
+use Phlexy\LexingException;
 
 /** @api */
 function parse($edn, array $tagHandlers = []) {
-    $tokens = tokenize($edn);
+    $tokens = try_tokenize($edn);
     $ast = parse_tokens($tokens, $edn);
     $ast = apply_tag_handlers($ast, $tagHandlers);
 
@@ -23,6 +24,14 @@ function parse($edn, array $tagHandlers = []) {
 
 /** @api */
 class ParserException extends \InvalidArgumentException {
+}
+
+function try_tokenize($edn) {
+    try {
+        return tokenize($edn);
+    } catch (LexingException $e) {
+        throw new ParserException(sprintf('Could not lex input %s', $edn), 0, $e);
+    }
 }
 
 function tokenize($edn) {
@@ -204,6 +213,10 @@ function resolve_character($edn) {
         'space'     => ' ',
         'tab'       => "\t",
     ];
+
+    if (!isset($chars[$edn]) && strlen($edn) > 1) {
+        throw new ParserException(sprintf('Could not parse input \%s as character.', $edn));
+    }
 
     return isset($chars[$edn]) ? $chars[$edn] : $edn;
 }
