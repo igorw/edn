@@ -1,0 +1,22 @@
+#!/usr/bin/env php
+<?php
+
+if (file_exists(__DIR__.'/../vendor/autoload.php')) {
+    require __DIR__.'/../vendor/autoload.php';
+} elseif (file_exists(__DIR__.'/../../../autoload.php')) {
+    require __DIR__.'/../../../autoload.php';
+}
+
+require __DIR__.'/../examples/util.php';
+
+if ($argc < 2) {
+    echo "Usage: bin/edn foo.edn\n";
+    exit(1);
+}
+
+list($self, $ednFile) = $argv;
+
+$edn = file_get_contents($ednFile);
+$data = igorw\edn\parse($edn);
+
+dump($data);
