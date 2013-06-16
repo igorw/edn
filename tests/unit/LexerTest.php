@@ -16,33 +16,9 @@ class LexerTest extends \PHPUnit_Framework_TestCase {
 
     function provideInvalidEdn() {
         return [
-            ['##'],
-            ['#:foo'],
-            [':#foo'],
-            [':{'],
-            [':}'],
-            [':{}'],
-            [':^'],
-            ['^'],
-            ['_:^'],
-            ['.9'],
-            ['/foo'],
-            ['foo/'],
-            [':/foo'],
-            [':foo/'],
-            ['#/foo'],
-            ['#foo/'],
             ['foo/bar/baz'],
             ['foo/bar/baz/qux'],
             ['foo/bar/baz/qux/'],
-            ['foo/bar/baz/qux/quux'],
-            ['//'],
-            ['///'],
-            ['/foo//'],
-            ['///foo'],
-            ['\newline0.1'],
-            ['\newline.'],
-            ['.\newline'],
         ];
     }
 }
