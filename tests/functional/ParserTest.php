@@ -294,30 +294,6 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
             ],
         ];
     }
-
-    /**
-     * @test
-     * @dataProvider provideUnmatchedParensEdn
-     * @expectedException igorw\edn\ParserException
-     */
-    function parseShouldRejectUnmatchedParens($edn) {
-        igorw\edn\parse($edn);
-    }
-
-    function provideUnmatchedParensEdn() {
-        return [
-            ['{'],
-            ['}'],
-            ['{{'],
-            ['}}'],
-            ['{ "foo"'],
-            ['{ "foo" :bar'],
-            ['foo bar :baz}'],
-            ['[}'],
-            ['#{{[}}'],
-            [':foo [#{:what)}]'],
-        ];
-    }
 }
 
 class Person {
