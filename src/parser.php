@@ -43,7 +43,7 @@ function tokenize($edn) {
 
     $lexer = $factory->createLexer([
         ';(?:.*)(?:\\n)?'                           => 'comment',
-        $delim('#_\s?\S+')                          => 'discard',
+        '#_[\s,]?'                                  => 'discard',
         $delim('nil|true|false')                    => 'literal',
         $delim('"[^"\\\\]*(?:\\\\.[^"\\\\]*)*"')    => 'string',
         '[\s,]'                                     => 'whitespace',
@@ -78,7 +78,7 @@ function parse_tokens(array $tokens, $edn) {
     $ast = [];
 
     $tokens = array_values(array_filter($tokens, function ($token) {
-        return !in_array(token_type($token), ['whitespace', 'comment', 'discard']);
+        return token_type($token) !== 'whitespace';
     }));
 
     $i = 0;
@@ -97,6 +97,8 @@ function parse_tokens(array $tokens, $edn) {
         $ast[] = parse_token($tokens[$i++]);
     }
 
+    $ast = strip_discards($ast);
+    $ast = strip_comments($ast);
     $ast = wrap_tags($ast);
 
     return $ast;
@@ -182,6 +184,10 @@ function parse_token(array $token) {
             return resolve_int($edn);
         case 'float':
             return resolve_float($edn);
+        case 'discard':
+            return new Discard();
+        case 'comment':
+            return new Comment();
     }
 
     throw new ParserException(sprintf('Could not parse input %s.', $edn));
@@ -244,6 +250,32 @@ function resolve_float($edn) {
     }
 
     throw new ParserException(sprintf('Could not parse input %s as float.', $edn));
+}
+
+function strip_discards(array $ast) {
+    $discard = false;
+
+    foreach ($ast as $i => $node) {
+        if ($node instanceof Discard) {
+            unset($ast[$i]);
+            $discard = true;
+
+            continue;
+        }
+
+        if ($discard) {
+            unset($ast[$i]);
+            $discard = false;
+        }
+    }
+
+    return array_values($ast);
+}
+
+function strip_comments(array $ast) {
+    return array_values(array_filter($ast, function ($node) {
+        return !$node instanceof Comment;
+    }));
 }
 
 function wrap_tags(array $ast) {

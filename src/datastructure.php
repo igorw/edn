@@ -45,6 +45,12 @@ function keyword($name) {
     return Keyword::get($name);
 }
 
+class Comment {
+}
+
+class Discard {
+}
+
 class Tag {
     public $name;
 
