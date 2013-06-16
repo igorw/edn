@@ -187,7 +187,7 @@ function parse_token(array $token) {
         case 'discard':
             return new Discard();
         case 'comment':
-            return new Comment();
+            return new Comment($edn);
     }
 
     throw new ParserException(sprintf('Could not parse input %s.', $edn));
