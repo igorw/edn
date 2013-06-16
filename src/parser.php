@@ -78,7 +78,7 @@ function parse_tokens(array $tokens, $edn) {
     $ast = [];
 
     $tokens = array_values(array_filter($tokens, function ($token) {
-        return token_type($token) !== 'whitespace';
+        return !in_array(token_type($token), ['whitespace', 'comment']);
     }));
 
     $i = 0;
@@ -98,7 +98,6 @@ function parse_tokens(array $tokens, $edn) {
     }
 
     $ast = strip_discards($ast);
-    $ast = strip_comments($ast);
     $ast = wrap_tags($ast);
 
     return $ast;
@@ -186,8 +185,6 @@ function parse_token(array $token) {
             return resolve_float($edn);
         case 'discard':
             return new Discard();
-        case 'comment':
-            return new Comment($edn);
     }
 
     throw new ParserException(sprintf('Could not parse input %s.', $edn));
@@ -270,12 +267,6 @@ function strip_discards(array $ast) {
     }
 
     return array_values($ast);
-}
-
-function strip_comments(array $ast) {
-    return array_values(array_filter($ast, function ($node) {
-        return !$node instanceof Comment;
-    }));
 }
 
 function wrap_tags(array $ast) {

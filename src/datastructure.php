@@ -67,17 +67,5 @@ class Tagged {
     }
 }
 
-class Comment {
-    public $data;
-
-    function __construct($data) {
-        $this->data = $data;
-    }
-
-    function __toString() {
-        return $this->data;
-    }
-}
-
 class Discard {
 }
