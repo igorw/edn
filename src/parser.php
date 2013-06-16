@@ -47,9 +47,9 @@ function tokenize($edn) {
         $delim('nil|true|false')                    => 'literal',
         $delim('"[^"\\\\]*(?:\\\\.[^"\\\\]*)*"')    => 'string',
         '[\s,]'                                     => 'whitespace',
-        $delim('\\\\(?:newline|return|space|tab|[a-z])')    => 'character',
-        $delim('(?:[+-]?)(?:[0-9]+\.[0-9]+)M?')     => 'float',
-        $delim('(?:[+-]?)(?:[0-9]+)N?')             => 'int',
+        $delim('\\\\(?:newline|return|space|tab|formfeed|.)')   => 'character',
+        $delim('(?:[+-])?\d+N?')                                => 'int',
+        $delim('(?:[+-])?\d+(\.\d+)?(?:[eE][-+]?\d+)?M?')       => 'float',
         $delim(get_symbol_regex())                  => 'symbol',
         $delim(':(?:'.get_symbol_regex().')')       => 'keyword',
         $delim('#(?:'.get_symbol_regex().')')       => 'tag',
@@ -219,6 +219,7 @@ function resolve_character($edn) {
         'return'    => "\r",
         'space'     => ' ',
         'tab'       => "\t",
+        'formfeed'  => "\f",
     ];
 
     return isset($chars[$edn]) ? $chars[$edn] : $edn;
@@ -232,21 +233,11 @@ function get_symbol_regex() {
 }
 
 function resolve_int($edn) {
-    if (preg_match('#^([+-]?)([0-9]+)N?$#', $edn, $matches)) {
-        $factor = ($matches[1] && '-' === $matches[1]) ? -1 : 1;
-        return (int) $matches[2] * $factor;
-    }
-
-    throw new ParserException(sprintf('Could not parse input %s as int.', $edn));
+    return (int) $edn;
 }
 
 function resolve_float($edn) {
-    if (preg_match('#^([+-]?)([0-9]+\.[0-9]+)M?$#', $edn, $matches)) {
-        $factor = ($matches[1] && '-' === $matches[1]) ? -1 : 1;
-        return (float) $matches[2] * $factor;
-    }
-
-    throw new ParserException(sprintf('Could not parse input %s as float.', $edn));
+    return (float) $edn;
 }
 
 function strip_discards(array $ast) {
