@@ -22,6 +22,12 @@
         </testsuite>
     </testsuites>
 
+    <testsuites>
+        <testsuite name="performance">
+            <directory>./tests/performance/</directory>
+        </testsuite>
+    </testsuites>
+
     <filter>
         <whitelist>
             <directory>./src/</directory>
