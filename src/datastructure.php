@@ -45,21 +45,6 @@ function keyword($name) {
     return Keyword::get($name);
 }
 
-class Comment {
-    public $data;
-
-    function __construct($data) {
-        $this->data = $data;
-    }
-
-    function __toString() {
-        return $this->data;
-    }
-}
-
-class Discard {
-}
-
 class Tag {
     public $name;
 
@@ -80,4 +65,19 @@ class Tagged {
         $this->tag = $tag;
         $this->value = $value;
     }
+}
+
+class Comment {
+    public $data;
+
+    function __construct($data) {
+        $this->data = $data;
+    }
+
+    function __toString() {
+        return $this->data;
+    }
+}
+
+class Discard {
 }
