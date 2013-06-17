@@ -7,14 +7,21 @@ class ShaunTest extends \PHPUnit_Framework_TestCase {
     function testParseWithValidEdn($ednFile) {
         $edn = file_get_contents($ednFile);
 
-        $data = igorw\edn\parse($edn);
-        $encoded = igorw\edn\encode($data);
+        $expectedFile = $this->shaunDir().'/platforms/php/'.basename($ednFile, '.edn').'.php';
+        if (!file_exists($expectedFile)) {
+            $this->markTestIncomplete(sprintf('Missing php translation of edn: %s', basename($expectedFile)));
+        }
+        $expectedData = file_get_contents($expectedFile);
+        $expectedCode = 'use igorw\edn; return '.$expectedData.';';
+        $expected = $expectedData ? [eval($expectedCode)] : [];
 
-        $this->assertEquals(trim($edn), trim($encoded));
+        $data = igorw\edn\parse($edn);
+
+        $this->assertEquals($expected, $data);
     }
 
     function provideValidEdnFile() {
-        $dir = __DIR__.'/../../vendor/shaunxcode/edn-tests/valid-edn';
+        $dir = $this->shaunDir().'/valid-edn';
         $files = new \FilesystemIterator($dir);
         return array_map(function ($file) { return [$file]; }, iterator_to_array($files));
     }
@@ -32,8 +39,12 @@ class ShaunTest extends \PHPUnit_Framework_TestCase {
     }
 
     function provideInvalidEdnFile() {
-        $dir = __DIR__.'/../../vendor/shaunxcode/edn-tests/invalid-edn';
+        $dir = $this->shaunDir().'/invalid-edn';
         $files = new \FilesystemIterator($dir);
         return array_map(function ($file) { return [$file]; }, iterator_to_array($files));
+    }
+
+    private function shaunDir() {
+        return __DIR__.'/../../vendor/shaunxcode/edn-tests';
     }
 }

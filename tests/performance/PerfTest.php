@@ -11,8 +11,12 @@ class PerfTest extends \PHPUnit_Framework_TestCase {
     }
 
     function providePerformanceEdnFile() {
-        $dir = __DIR__.'/../../vendor/shaunxcode/edn-tests/performance';
+        $dir = $this->shaunDir().'/performance';
         $files = new \FilesystemIterator($dir);
         return array_map(function ($file) { return [$file]; }, iterator_to_array($files));
+    }
+
+    private function shaunDir() {
+        return __DIR__.'/../../vendor/shaunxcode/edn-tests';
     }
 }
