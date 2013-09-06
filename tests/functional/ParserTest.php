@@ -9,6 +9,7 @@ use igorw\edn\Set;
 use igorw\edn\Tag;
 use igorw\edn\Tagged;
 use igorw\edn;
+use Rhumsaa\Uuid\Uuid;
 
 class ParserTest extends \PHPUnit_Framework_TestCase {
     /** @dataProvider provideEdn */
@@ -248,7 +249,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
     }
 
     function testParseWithUuidTagHandler() {
-        $expected = [new igorw\edn\Uuid('f81d4fae-7dec-11d0-a765-00a0c91e6bf6')];
+        $expected = [Uuid::fromString('f81d4fae-7dec-11d0-a765-00a0c91e6bf6')];
         $edn = '#uuid "f81d4fae-7dec-11d0-a765-00a0c91e6bf6"';
 
         $data = igorw\edn\parse($edn);

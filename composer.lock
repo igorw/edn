@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "7deb9fa74ae2fffe6cb86e8f4a0a1393",
+    "hash": "ea6d27390a9954ea9eef009de8d01474",
     "packages": [
         {
             "name": "nikic/phlexy",
@@ -51,6 +51,65 @@
         }
     ],
     "packages-dev": [
+        {
+            "name": "rhumsaa/uuid",
+            "version": "2.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ramsey/uuid.git",
+                "reference": "721181e32766487294ee3d1e49ef2a52d605cc66"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ramsey/uuid/zipball/721181e32766487294ee3d1e49ef2a52d605cc66",
+                "reference": "721181e32766487294ee3d1e49ef2a52d605cc66",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "doctrine/dbal": ">=2.3",
+                "moontoast/math": "1.1.0"
+            },
+            "suggest": {
+                "doctrine/dbal": "Allow the use of a UUID as doctrine field type.",
+                "moontoast/math": "Provides support for large integers."
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.4.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Rhumsaa\\Uuid": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Marijn Huizendveld",
+                    "email": "marijn.huizendveld@gmail.com"
+                },
+                {
+                    "name": "Ben Ramsey",
+                    "homepage": "http://benramsey.com"
+                }
+            ],
+            "description": "A PHP 5.3+ library for generating RFC 4122 version 1, 3, 4, and 5 universally unique identifiers (UUID).",
+            "homepage": "https://github.com/ramsey/uuid",
+            "keywords": [
+                "guid",
+                "identifier",
+                "uuid"
+            ],
+            "time": "2013-07-30 00:05:42"
+        },
         {
             "name": "shaunxcode/edn-tests",
             "version": "dev-master",

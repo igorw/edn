@@ -14,7 +14,11 @@
         "nikic/phlexy": "~1.0-dev"
     },
     "require-dev": {
-        "shaunxcode/edn-tests": "dev-master"
+        "shaunxcode/edn-tests": "dev-master",
+        "rhumsaa/uuid": "~2.4"
+    },
+    "suggest": {
+        "rhumsaa/uuid": "If you want to use UUID tags."
     },
     "autoload": {
         "files": ["src/datastructure.php", "src/parser.php", "src/encoder.php"]

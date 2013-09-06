@@ -26,9 +26,7 @@ function default_tag_handlers() {
         'inst' => function ($node) {
             return new \DateTime($node);
         },
-        'uuid' => function ($node) {
-            return new Uuid($node);
-        },
+        'uuid' => ['Rhumsaa\Uuid\Uuid', 'fromString'],
     ];
 }
 
