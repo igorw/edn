@@ -5,10 +5,6 @@ Parser for the [edn](https://github.com/edn-format/edn) format. In PHP.
 The parser internally relies on [Phlexy](https://github.com/nikic/Phlexy) for
 lexing.
 
-This library uses the [Ardent](https://github.com/morrisonlevi/Ardent) data
-structures to represent lists, vectors, maps and sets. Those are the ones you
-will get when parsing edn.
-
 ## Usage
 
 ### Parsing
@@ -55,16 +51,17 @@ use the `encode` function:
 
     use igorw\edn;
 
-    $person = new Ardent\HashMap();
+    $person = new edn\Map();
     $person[edn\keyword('name')] = 'igorw';
 
-    $list = new Ardent\LinkedList();
-    $list->push(edn\symbol('foo'));
-    $list->push(edn\symbol('bar'));
-    $list->push(edn\symbol('baz'));
-    $list->push(edn\keyword('qux'));
-    $list->push(1.0);
-    $list->push($person);
+    $list = new edn\LinkedList([
+        edn\symbol('foo'),
+        edn\symbol('bar'),
+        edn\symbol('baz'),
+        edn\keyword('qux'),
+        1.0,
+        $person,
+    ]);
 
     $edn = edn\encode([$list]);
     // (foo bar baz :qux 1.0 {:name "igorw"})

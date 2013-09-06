@@ -4,10 +4,10 @@ require __DIR__.'/../vendor/autoload.php';
 
 use igorw\edn;
 
-$person = new Ardent\HashMap();
+$person = new edn\Map();
 $person[edn\keyword('name')] = 'igorw';
 
-$list = new Ardent\LinkedList();
+$list = new edn\LinkedList();
 $list->push(edn\symbol('foo'));
 $list->push(edn\symbol('bar'));
 $list->push(edn\symbol('baz'));

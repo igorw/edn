@@ -2,12 +2,6 @@
 
 namespace igorw\edn;
 
-use Ardent\LinkedList;
-use Ardent\Vector;
-use Ardent\Map;
-use Ardent\HashMap;
-use Ardent\Set;
-
 /** @api */
 function encode($ast) {
     if (!is_array($ast)) {
@@ -128,8 +122,9 @@ function encode_map($map) {
 }
 
 function encode_map_elements($map) {
-    $encoded = $map->map(function ($value, $key) {
-        return encode_node($key).' '.encode_node($value);
+    $encoded = $map->map(function ($item) {
+        list($key, $val) = $item;
+        return encode_node($key).' '.encode_node($val);
     });
     return implode(' ', iterator_to_array($encoded, false));
 }
@@ -143,9 +138,9 @@ function encode_tagged($tagged) {
 }
 
 function convert_assoc_to_map($assoc) {
-    $map = new HashMap('serialize');
+    $map = new Map();
     foreach ($assoc as $key => $value) {
-        $map->insert(Keyword::get($key), $value);
+        $map[Keyword::get($key)] = $value;
     }
     return $map;
 }

@@ -35,6 +35,88 @@ class Keyword extends Symbol {
     }
 }
 
+class Collection implements \IteratorAggregate {
+    public $data;
+
+    function __construct($data = []) {
+        if ($data instanceof \Iterator || $data instanceof \IteratorAggregate)
+            $data = iterator_to_array($data);
+        $this->data = $this->init($data);
+    }
+
+    function init(array $data) {
+        return $data;
+    }
+
+    function seq() {
+        return $this->data;
+    }
+
+    function map($fn) {
+        return new static(array_map($fn, $this->seq()));
+    }
+
+    function getIterator() {
+        return new \ArrayIterator($this->seq());
+    }
+}
+
+class LinkedList extends Collection {}
+
+class Vector extends Collection {}
+
+class Map extends Collection implements \ArrayAccess {
+    function init(array $data) {
+        $map = [];
+        $partitioned = array_chunk($data, 2);
+        foreach ($partitioned as $item) {
+            list($key, $val) = $item;
+            $key = $this->hashCode($key);
+            $map[$key] = $val;
+        }
+        return $map;
+    }
+
+    function seq() {
+        $seq = [];
+        foreach ($this->data as $key => $val) {
+            $key = unserialize($key);
+            $seq[] = [$key, $val];
+        }
+        return $seq;
+    }
+
+    function map($fn) {
+        return new LinkedList(array_map($fn, $this->seq()));
+    }
+
+    function offsetGet($key) {
+        $key = $this->hashCode($key);
+        return $this->data[$key];
+    }
+    function offsetSet($key, $value) {
+        $key = $this->hashCode($key);
+        $this->data[$key] = $value;
+    }
+    function offsetExists($key) {
+        $key = $this->hashCode($key);
+        return isset($this->data[$key]);
+    }
+    function offsetUnset($key) {
+        $key = $this->hashCode($key);
+        unset($this->data[$key]);
+    }
+    function hashCode($val) {
+        return serialize($val);
+    }
+}
+
+class Set extends Collection {
+    function init(array $data) {
+        return array_unique($data);
+    }
+}
+
 /** @api */
 function symbol($name) {
     return Symbol::get($name);

@@ -2,13 +2,6 @@
 
 namespace igorw\edn;
 
-use Ardent\LinkedList;
-use Ardent\Vector;
-use Ardent\HashMap;
-use Ardent\HashSet;
-use Ardent\Collection;
-use Ardent\Map;
-use Ardent\Set;
 use Phlexy\LexerFactory\Stateless\UsingPregReplace;
 use Phlexy\LexerDataGenerator;
 use Phlexy\LexingException;
@@ -68,11 +61,11 @@ function tokenize($edn) {
 }
 
 function parse_tokens(array $tokens, $edn) {
-    $dataFactories = [
-        'list_start'    => __NAMESPACE__.'\\create_list',
-        'vector_start'  => __NAMESPACE__.'\\create_vector',
-        'map_start'     => __NAMESPACE__.'\\create_map',
-        'set_start'     => __NAMESPACE__.'\\create_set',
+    $classes = [
+        'list_start'    => __NAMESPACE__.'\\LinkedList',
+        'vector_start'  => __NAMESPACE__.'\\Vector',
+        'map_start'     => __NAMESPACE__.'\\Map',
+        'set_start'     => __NAMESPACE__.'\\Set',
     ];
 
     $ast = [];
@@ -86,8 +79,8 @@ function parse_tokens(array $tokens, $edn) {
 
     while ($i < $size) {
         $type = token_type($tokens[$i]);
-        if (isset($dataFactories[$type])) {
-            $result = parse_subtree($dataFactories[$type], $tokens, $i, $edn);
+        if (isset($classes[$type])) {
+            $result = parse_subtree($classes[$type], $tokens, $i, $edn);
             $ast[] = $result['subtree'];
             $i = $result['i'];
 
@@ -103,7 +96,7 @@ function parse_tokens(array $tokens, $edn) {
     return $ast;
 }
 
-function parse_subtree($dataFactory, array $tokens, $i, $edn) {
+function parse_subtree($class, array $tokens, $i, $edn) {
     $subtree = null;
     $level = [];
     $j = 0;
@@ -121,7 +114,7 @@ function parse_subtree($dataFactory, array $tokens, $i, $edn) {
         }
 
         if (0 === count($level)) {
-            $subtree = $dataFactory(parse_tokens(array_slice($tokens, $i+1, $j-1), $edn));
+            $subtree = new $class(parse_tokens(array_slice($tokens, $i+1, $j-1), $edn));
             break;
         }
     }
@@ -280,48 +273,6 @@ function wrap_tags(array $ast) {
     return array_values($ast);
 }
 
-function create_list(array $data) {
-    $list = new LinkedList();
-    foreach ($data as $item) {
-        $list->push($item);
-    }
-    return $list;
-}
-
-function create_vector(array $data) {
-    $vector = new Vector();
-    $vector->appendAll(new \ArrayIterator($data));
-    return $vector;
-}
-
-function create_map(array $data) {
-    $map = new HashMap('serialize');
-
-    $prev = null;
-    $key = true;
-    foreach ($data as $value) {
-        if ($key) {
-            $prev = $value;
-            $key = false;
-            continue;
-        }
-
-        $map->insert($prev, $value);
-        $prev = null;
-        $key = true;
-    }
-
-    return $map;
-}
-
-function create_set(array $data) {
-    $set = new HashSet('serialize');
-    foreach ($data as $item) {
-        $set->add($item);
-    }
-    return $set;
-}
-
 function apply_tag_handlers(array $ast, array $tagHandlers) {
     if (!$tagHandlers) {
         return $ast;
@@ -344,57 +295,27 @@ function apply_tag_handlers_node($node, array $tagHandlers) {
         $filter = function ($value) use ($tagHandlers) {
             return apply_tag_handlers_node($value, $tagHandlers);
         };
-        $node = map_collection($node, $filter);
+
+        if ($node instanceof Map) {
+            $node = $node->map(function ($item) use ($filter) {
+                list($key, $value) = $item;
+                return [$filter($key), $filter($value)];
+            });
+            $node = seq_to_map($node);
+        } else {
+            $node = $node->map($filter);
+        }
     }
 
     return $node;
 }
 
-function map_collection(Collection $node, callable $filter) {
-    $node = clone $node;
-
-    $fns = [
-        'Ardent\\LinkedList' => __NAMESPACE__.'\\mutate_map_list',
-        'Ardent\\Vector'     => __NAMESPACE__.'\\mutate_map_list',
-        'Ardent\\HashMap'    => __NAMESPACE__.'\\mutate_map_map',
-        'Ardent\\HashSet'    => __NAMESPACE__.'\\mutate_map_set',
-    ];
-
-    $class = get_class($node);
-    if (!isset($fns[$class])) {
-        throw new ParserException(sprintf('Unrecognized collection of type %s.', $class));
+function seq_to_map(Collection $seq) {
+    $map = [];
+    foreach ($seq as $item) {
+        list($key, $value) = $item;
+        $map[] = $key;
+        $map[] = $value;
     }
-    $fn = $fns[$class];
-
-    $node->each(function ($value, $key) use ($fn, $node, $filter) {
-        $fn($node, $key, $value, $filter);
-    });
-
-    return $node;
-}
-
-function mutate_map_list(Collection $node, $key, $value, callable $filter) {
-    $newValue = $filter($value);
-    if ($value != $newValue) {
-        $node[$key] = $newValue;
-    }
-}
-
-function mutate_map_map(Map $node, $key, $value, callable $filter) {
-    $newKey = $filter($key);
-    $newValue = $filter($value);
-    if ($key != $newKey) {
-        $node->remove($key);
-        $node->insert($newKey, $newValue);
-    } elseif ($value != $newValue) {
-        $node->insert($key, $newValue);
-    }
-}
-
-function mutate_map_set(Set $node, $key, $value, callable $filter) {
-    $newValue = $filter($value);
-    if ($value != $newValue) {
-        $node->remove($value);
-        $node->add($newValue);
-    }
+    return new Map($map);
 }

@@ -11,8 +11,7 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "nikic/phlexy": "~1.0-dev",
-        "morrisonlevi/ardent": "0.6.*@dev"
+        "nikic/phlexy": "~1.0-dev"
     },
     "require-dev": {
         "shaunxcode/edn-tests": "dev-master"

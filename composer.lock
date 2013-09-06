@@ -3,58 +3,8 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "357d2ae0e5275ad5db47b4824604d80b",
+    "hash": "7deb9fa74ae2fffe6cb86e8f4a0a1393",
     "packages": [
-        {
-            "name": "morrisonlevi/ardent",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/morrisonlevi/Ardent.git",
-                "reference": "6a78169fda14bef01605152b45be1bab69a72af5"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/morrisonlevi/Ardent/zipball/6a78169fda14bef01605152b45be1bab69a72af5",
-                "reference": "6a78169fda14bef01605152b45be1bab69a72af5",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.4"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "0.6-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "Ardent": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Levi Morrison",
-                    "email": "levim@php.net",
-                    "homepage": "http://morrisonlevi.github.com",
-                    "role": "Developer"
-                }
-            ],
-            "description": "A healthy library for PHP",
-            "homepage": "https://github.com/morrisonlevi/Ardent",
-            "keywords": [
-                "ardent",
-                "library",
-                "php",
-                "spl"
-            ],
-            "time": "2013-06-04 14:33:34"
-        },
         {
             "name": "nikic/phlexy",
             "version": "dev-master",
@@ -110,7 +60,7 @@
                 "reference": "master"
             },
             "type": "library",
-            "time": "2013-06-16 04:36:43"
+            "time": "2013-06-29 17:46:41"
         }
     ],
     "aliases": [
@@ -119,7 +69,6 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "nikic/phlexy": 20,
-        "morrisonlevi/ardent": 20,
         "shaunxcode/edn-tests": 20
     },
     "platform": {
