@@ -151,3 +151,15 @@ class Tagged {
 
 class Discard {
 }
+
+class Uuid {
+    public $id;
+
+    function __construct($id) {
+        $this->id = $id;
+    }
+
+    function __toString() {
+        return $this->id;
+    }
+}

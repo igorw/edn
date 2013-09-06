@@ -242,13 +242,18 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
     function testParseWithInstTagHandler() {
         $edn = '#inst "1985-04-12T23:20:50.52Z"';
 
-        $data = igorw\edn\parse($edn, [
-            'inst' => function ($node) {
-                return new \DateTime($node);
-            },
-        ]);
+        $data = igorw\edn\parse($edn);
 
         $this->assertEquals('1985-04-12 23:20:50', $data[0]->format('Y-m-d H:i:s'));
+    }
+
+    function testParseWithUuidTagHandler() {
+        $expected = [new igorw\edn\Uuid('f81d4fae-7dec-11d0-a765-00a0c91e6bf6')];
+        $edn = '#uuid "f81d4fae-7dec-11d0-a765-00a0c91e6bf6"';
+
+        $data = igorw\edn\parse($edn);
+
+        $this->assertEquals($expected, $data);
     }
 
     /** @dataProvider provideNestedTagEdn */

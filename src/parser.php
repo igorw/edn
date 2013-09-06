@@ -8,6 +8,8 @@ use Phlexy\LexingException;
 
 /** @api */
 function parse($edn, array $tagHandlers = []) {
+    $tagHandlers = array_merge(default_tag_handlers(), $tagHandlers);
+
     $tokens = try_tokenize($edn);
     $ast = parse_tokens($tokens, $edn);
     $ast = apply_tag_handlers($ast, $tagHandlers);
@@ -17,6 +19,17 @@ function parse($edn, array $tagHandlers = []) {
 
 /** @api */
 class ParserException extends \InvalidArgumentException {
+}
+
+function default_tag_handlers() {
+    return [
+        'inst' => function ($node) {
+            return new \DateTime($node);
+        },
+        'uuid' => function ($node) {
+            return new Uuid($node);
+        },
+    ];
 }
 
 function try_tokenize($edn) {
