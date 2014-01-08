@@ -223,7 +223,6 @@ function resolve_character($edn) {
         'return'    => "\r",
         'space'     => ' ',
         'tab'       => "\t",
-        'formfeed'  => "\f",
     ];
 
     return isset($chars[$edn]) ? $chars[$edn] : $edn;

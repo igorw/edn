@@ -76,7 +76,7 @@ function is_literal($node) {
 }
 
 function is_character($node) {
-    return is_string($node) && (bool) preg_match('#^[a-z\n\r\t\f ]$#', $node);
+    return is_string($node) && (bool) preg_match('#^[a-z\n\r\t ]$#', $node);
 }
 
 function encode_character($char) {
@@ -85,7 +85,6 @@ function encode_character($char) {
         "\r" => '\return',
         " "  => '\space',
         "\t" => '\tab',
-        "\f" => '\formfeed',
     ];
 
     return isset($map[$char]) ? $map[$char] : "\\$char";
